@@ -47,8 +47,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.news.data.BottomNavigationItem
+import com.example.news.pages.AccountScreen
 import com.example.news.pages.DetailScreen
 import com.example.news.pages.MainPage
+import com.example.news.pages.MarkedScreen
+import com.example.news.pages.SearchScreen
 import com.example.news.ui.theme.IkinciSayfa
 import com.example.news.ui.theme.NewsTheme
 
@@ -146,7 +149,9 @@ fun BottomNav(){
     ){padding ->
         NavHost(navController = navigationCont, startDestination = "home", modifier = Modifier.padding(padding)){
             composable("home") { MainPage(paddingValues = padding) }
-            composable("home") { (paddingValues = padding) }
+            composable("search") { SearchScreen(paddingValues = padding) }
+            composable("marks") { MarkedScreen(paddingValues = padding) }
+            composable("account") { AccountScreen(paddingValues = padding) }
         }
     }
 

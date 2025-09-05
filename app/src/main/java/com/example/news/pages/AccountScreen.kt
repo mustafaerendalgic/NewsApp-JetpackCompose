@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 fun AccountScreen(paddingValues: PaddingValues){
     Column(modifier = Modifier.fillMaxSize()
         .padding(paddingValues),
-
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
