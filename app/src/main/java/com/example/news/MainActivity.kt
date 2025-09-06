@@ -52,7 +52,7 @@ import com.example.news.pages.DetailScreen
 import com.example.news.pages.MainPage
 import com.example.news.pages.MarkedScreen
 import com.example.news.pages.SearchScreen
-import com.example.news.ui.theme.IkinciSayfa
+
 import com.example.news.ui.theme.NewsTheme
 
 class MainActivity : ComponentActivity() {
