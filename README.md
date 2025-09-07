@@ -12,4 +12,4 @@ This is an early-stage project, still under development.
 
 ## Setup
 1. Get a free API key from [NewsAPI](https://newsapi.org/).  
-2. Add it to your `local.properties` or `gradle.properties` file:
+2. Add it to your `local.properties` or `gradle.properties` file
