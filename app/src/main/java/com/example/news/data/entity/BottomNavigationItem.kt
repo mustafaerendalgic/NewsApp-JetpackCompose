@@ -1,4 +1,4 @@
-package com.example.news.data
+package com.example.news.data.entity
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
