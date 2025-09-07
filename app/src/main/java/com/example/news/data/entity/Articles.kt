@@ -1,4 +1,4 @@
-package com.example.news.data
+package com.example.news.data.entity
 
 data class Articles(
     val source: Source,
