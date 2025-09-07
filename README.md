@@ -7,6 +7,8 @@ This is an early-stage project, still under development.
 - [Jetpack Compose]
 - [Retrofit] 
 - [NewsAPI]
+- [Hilt]
+- [MVVM Architecture]
 
 ## Setup
 1. Get a free API key from [NewsAPI](https://newsapi.org/).  
