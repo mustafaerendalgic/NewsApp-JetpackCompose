@@ -57,7 +57,7 @@ fun MainPageUI(articleList: List<Articles>){
         Text(text = "Top Headlines",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
         )
         LazyRow(verticalAlignment = Alignment.Top){
             items(articleList) { article ->

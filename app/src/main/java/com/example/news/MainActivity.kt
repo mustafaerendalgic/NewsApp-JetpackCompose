@@ -107,21 +107,29 @@ fun BottomNav(){
     Scaffold(
         topBar = {
             Surface(
-                shadowElevation = 8.dp,
+                shadowElevation = 12.dp,
                 color = MaterialTheme.colorScheme.surface
             ) {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "news",
-                            fontSize = 32.sp,
-                            fontFamily = FontFamily(Font(R.font.libertinus))
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent
+                Column {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "news",
+                                fontSize = 32.sp,
+                                fontFamily = FontFamily(Font(R.font.libertinus))
+                            )
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        ),
+                        modifier = Modifier.shadow(22.dp)
                     )
-                )
+
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = Color.LightGray
+                    )
+                }
             }
         },
         bottomBar = {
