@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainPageViewModel@Inject constructor(private val repo: NewsRepo) : ViewModel() {
+open class MainPageViewModel@Inject constructor(private val repo: NewsRepo) : ViewModel() {
 
     private val _listOfArticles = MutableStateFlow<List<Articles>>(emptyList())
     val listOfArticles: StateFlow<List<Articles>> = _listOfArticles
