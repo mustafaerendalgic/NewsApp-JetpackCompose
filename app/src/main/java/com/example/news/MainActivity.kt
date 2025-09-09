@@ -1,15 +1,18 @@
 package com.example.news
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Newspaper
@@ -21,8 +24,12 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
@@ -30,6 +37,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +47,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -47,11 +63,13 @@ import com.example.news.pages.AccountScreen
 import com.example.news.pages.MainPage
 import com.example.news.pages.MarkedScreen
 import com.example.news.pages.SearchScreen
+import androidx.compose.ui.graphics.Color
 
 import com.example.news.ui.theme.NewsTheme
 import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
-@EntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,38 +84,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(){
-
-    var number by remember { mutableStateOf(0) }
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxSize()) {
-            Text(text = number.toString())
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically) {
-                OutlinedButton(onClick = {
-                    number--
-                },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(10.dp)) {
-
-                    Text(text = "Çıkar")
-                }
-                Button(onClick = {number++},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)) {
-                    Text(text = "Ekle")
-                }
-            }
-    }
-}
-
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNav(){
@@ -119,7 +106,23 @@ fun BottomNav(){
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "News") })
+            Surface(
+                shadowElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "news",
+                            fontSize = 32.sp,
+                            fontFamily = FontFamily(Font(R.font.libertinus))
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    )
+                )
+            }
         },
         bottomBar = {
             NavigationBar {
@@ -143,13 +146,20 @@ fun BottomNav(){
                 }
             }
         }
-    ){padding ->
-        NavHost(navController = navigationCont, startDestination = "home", modifier = Modifier.padding(padding)){
-            composable("home") { MainPage(paddingValues = padding) }
-            composable("search") { SearchScreen(paddingValues = padding) }
-            composable("marks") { MarkedScreen(paddingValues = padding) }
-            composable("account") { AccountScreen(paddingValues = padding) }
-        }
+    ){innerPadding ->
+
+        NavHost(
+            navController = navigationCont,
+            startDestination = "home",
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            composable("home") { MainPage() }
+            composable("search") { SearchScreen(paddingValues = innerPadding) }
+            composable("marks") { MarkedScreen(paddingValues = innerPadding) }
+            composable("account") { AccountScreen(paddingValues = innerPadding) }}
+
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.news.data.repo
 
+import android.util.Log
 import com.example.news.data.entity.APICevap
 import com.example.news.retrofit.NewsDAO
 import java.util.Locale
