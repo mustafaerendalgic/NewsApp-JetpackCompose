@@ -1,5 +1,9 @@
 package com.example.news.pages
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,12 +29,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.ui.viewmodels.MainPageViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.HeadlinesDesign
-
+import kotlin.math.absoluteValue
 
 
 @Composable
@@ -47,6 +57,12 @@ fun MainPage(){
 @Composable
 fun MainPageUI(articleList: List<Articles>){
 
+    val listState = rememberLazyListState()
+
+    val conf = LocalConfiguration.current
+    val width = min(conf.screenWidthDp.dp * 0.92f, 400f.dp)
+    val sidePadding = if(width != 400f.dp )(conf.screenWidthDp.dp - width) / 2 - 4.dp else /* (conf.screenWidthDp.dp - (width * listState.layoutInfo.visibleItemsInfo.size)) / 2 - 4.dp*/ 16.dp
+
     Column(modifier = Modifier.fillMaxSize()
         .fillMaxHeight(),
         verticalArrangement = Arrangement.Top,
@@ -54,14 +70,48 @@ fun MainPageUI(articleList: List<Articles>){
         )
 
         {
+
         Text(text = "Top Headlines",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
         )
-        LazyRow(verticalAlignment = Alignment.Top){
-            items(articleList) { article ->
-                HeadlinesDesign(article)
+        LazyRow(verticalAlignment = Alignment.Top,
+            state = listState,
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = sidePadding)
+        ){
+
+            itemsIndexed(articleList) { index, article ->
+
+                val visibleInfo = listState.layoutInfo.visibleItemsInfo
+                val center = (listState.layoutInfo.viewportStartOffset +
+                        listState.layoutInfo.viewportEndOffset) / 2
+                var scale = 0.92f
+                visibleInfo.find { it.index == index }?.let{iteminfo ->
+
+                    val mostCentered = visibleInfo.minByOrNull {
+                        val itemCenter = it.offset + it.size / 2
+                        (center - itemCenter).absoluteValue
+                    }
+                    scale = if (mostCentered?.index == index) 1f else 0.92f
+
+                }
+
+                val animatedScale by animateFloatAsState(
+                    targetValue = scale,
+                    label = "scaleAnimation",
+                    animationSpec = tween(
+                        durationMillis = 400,
+                        easing = FastOutSlowInEasing
+                    )
+                )
+
+                HeadlinesDesign(article,
+                    modifier = Modifier
+                        .width(width)
+                        .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale))
             }
         }
     }
