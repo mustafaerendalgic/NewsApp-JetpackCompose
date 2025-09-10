@@ -116,7 +116,7 @@ fun BottomNav(){
                             Text(
                                 text = "news",
                                 fontSize = 32.sp,
-                                fontFamily = FontFamily(Font(R.font.libertinus))
+                                fontFamily = FontFamily(Font(R.font.playfair))
                             )
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
