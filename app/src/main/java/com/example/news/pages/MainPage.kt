@@ -7,6 +7,8 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,14 +31,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.ui.viewmodels.MainPageViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
+import com.example.news.R
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.HeadlinesDesign
+import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.absoluteValue
 
 
@@ -60,10 +67,11 @@ fun MainPageUI(articleList: List<Articles>){
     val listState = rememberLazyListState()
 
     val conf = LocalConfiguration.current
-    val width = min(conf.screenWidthDp.dp * 0.92f, 400f.dp)
-    val sidePadding = if(width != 400f.dp )(conf.screenWidthDp.dp - width) / 2 - 4.dp else /* (conf.screenWidthDp.dp - (width * listState.layoutInfo.visibleItemsInfo.size)) / 2 - 4.dp*/ 16.dp
+    val width = min(conf.screenWidthDp.dp * 0.9f, 400f.dp)
+    val sidePadding = if(width != 400f.dp )((conf.screenWidthDp.dp - width) / 2) else 16.dp
 
-    Column(modifier = Modifier.fillMaxSize()
+    Column(modifier = Modifier
+        .fillMaxSize()
         .fillMaxHeight(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
@@ -71,11 +79,26 @@ fun MainPageUI(articleList: List<Articles>){
 
         {
 
-        Text(text = "Top Headlines",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-        )
+        Row(modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 24.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+
+            Text(text = "Top Headlines",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily(Font(R.font.gabarito)),
+            )
+
+            Spacer(Modifier.weight(1f))
+
+            Text(text = "See All " + "(${articleList.size})",
+                fontSize = 15.sp,
+                fontFamily = FontFamily(Font(R.font.gabarito)),
+                color = Color(0xFF5F8DE3)
+            )
+
+        }
+
         LazyRow(verticalAlignment = Alignment.Top,
             state = listState,
             flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
