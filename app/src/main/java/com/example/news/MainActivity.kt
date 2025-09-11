@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.CircleNotifications
 import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.BookmarkBorder
@@ -64,6 +67,7 @@ import com.example.news.pages.MainPage
 import com.example.news.pages.MarkedScreen
 import com.example.news.pages.SearchScreen
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 
 import com.example.news.ui.theme.NewsTheme
 import dagger.hilt.EntryPoint
@@ -115,14 +119,15 @@ fun BottomNav(){
                         title = {
                             Text(
                                 text = "news",
-                                fontSize = 32.sp,
+                                fontSize = 24.sp,
                                 fontFamily = FontFamily(Font(R.font.playfair))
                             )
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
-                        modifier = Modifier.shadow(22.dp)
+                        modifier = Modifier
+                            .shadow(22.dp),
                     )
 
                     HorizontalDivider(

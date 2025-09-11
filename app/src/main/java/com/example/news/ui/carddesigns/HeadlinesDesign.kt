@@ -7,15 +7,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.rounded.Timelapse
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -28,6 +33,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,7 +47,12 @@ import com.example.news.R
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import androidx.compose.ui.text.font.FontFamily
-
+import androidx.core.content.ContextCompat
+import com.example.news.util.ParseFunction
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -51,8 +63,9 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)) {
 
-        Box(modifier = Modifier.fillMaxWidth()
-            .aspectRatio(16f/9f)){
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(4f / 3f)){
 
             AsyncImage(
                 model = article.urlToImage,
@@ -63,25 +76,65 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
 
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxHeight(0.7f)
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black),
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
                             startY = 100.0f
                         )
                     )
             )
 
-            Text(text = article.publishedAt,
-                modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.gabarito)),
-                color = Color.White,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 2
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.4f)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent),
+                            startY = 0f
+                        )
+                    )
+            )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+
+                Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi), contentDescription = "",
+                    modifier = Modifier.size(20.dp))
+
+                Text(text = ParseFunction(article.publishedAt),
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.gabarito)),
+                    color = Color.White,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
                 )
 
-            Column(modifier = Modifier.fillMaxWidth()
+                Spacer(Modifier.weight(1f))
+                
+                /*Text(text = "|",
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.gabarito)),
+                    color = Color.White,
+                )*/
+
+                Icon(Icons.Outlined.BookmarkBorder, contentDescription = "Mark",
+                    modifier = Modifier,
+                    tint = colorResource(R.color.white),
+                )
+
+            }
+
+
+
+            Column(modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.BottomStart)
                 .padding(PaddingValues(16.dp)),
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -90,11 +143,11 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
 
                     Icon(Icons.Filled.AllInclusive,
                         contentDescription = "",
-                        tint = Color.White
+                        tint = colorResource(R.color.mavi)
                         )
 
                     Text(text = article.source.name,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.gabarito)),
                         color = Color.White,
                         overflow = TextOverflow.Ellipsis,
@@ -102,10 +155,10 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                 }
 
                 Text(text = article.title,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     fontFamily = FontFamily(Font(R.font.gabarito)),
                     color = Color.White,
-                    fontWeight = FontWeight.Bold,
+                    //fontWeight = FontWeight.Bold,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2)
 
