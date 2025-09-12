@@ -20,6 +20,13 @@ open class MainPageViewModel@Inject constructor(private val repo: NewsRepo) : Vi
     private val _listOfHeadlines = MutableStateFlow<List<Articles>>(emptyList())
     val listOfHeadlines: StateFlow<List<Articles>> = _listOfHeadlines
 
+    private val _detailItem = MutableStateFlow<Articles?>(null)
+    val detailItem: StateFlow<Articles?> = _detailItem
+
+    fun selectedArticle(articles: Articles){
+        _detailItem.value = articles
+    }
+
     fun fetchEverything(keyword: String){
         viewModelScope.launch{
             _listOfArticles.value = repo.fetchByKeyword(keyword).articles

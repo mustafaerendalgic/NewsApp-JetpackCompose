@@ -3,6 +3,7 @@ package com.example.news.pages
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.news.R
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
@@ -48,21 +50,20 @@ import kotlin.math.absoluteValue
 
 
 @Composable
-fun MainPage(){
+fun MainPage(navController: NavController, viewModel: MainPageViewModel){
 
-    val viewModel: MainPageViewModel = hiltViewModel()
     val articleList by viewModel.listOfHeadlines.collectAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
         viewModel.fetchTheHeadlines()
     }
 
-    MainPageUI(articleList = articleList)
+    MainPageUI(articleList = articleList, viewModel, navController)
 
 }
 
 @Composable
-fun MainPageUI(articleList: List<Articles>){
+fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navController: NavController){
 
     val listState = rememberLazyListState()
 
@@ -134,7 +135,11 @@ fun MainPageUI(articleList: List<Articles>){
                 HeadlinesDesign(article,
                     modifier = Modifier
                         .width(width)
-                        .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale))
+                        .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale)
+                        .clickable {
+                            viewModel.selectedArticle(articleList[index])
+                            navController.navigate("details")
+                        })
             }
         }
     }
@@ -174,7 +179,7 @@ fun mainPreview(){
         )
     )
 
-    MainPageUI(dummyArticles)
+    //MainPageUI(dummyArticles)
 
 }
 

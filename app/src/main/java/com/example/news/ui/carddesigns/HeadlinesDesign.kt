@@ -48,6 +48,7 @@ import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import androidx.compose.ui.text.font.FontFamily
 import androidx.core.content.ContextCompat
+import com.example.news.BuildConfig
 import com.example.news.util.ParseFunction
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -117,12 +118,6 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                 )
 
                 Spacer(Modifier.weight(1f))
-                
-                /*Text(text = "|",
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.gabarito)),
-                    color = Color.White,
-                )*/
 
                 Icon(Icons.Outlined.BookmarkBorder, contentDescription = "Mark",
                     modifier = Modifier,

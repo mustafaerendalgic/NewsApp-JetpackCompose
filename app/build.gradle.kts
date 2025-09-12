@@ -30,6 +30,8 @@ android {
 
         val apiKey: String = localProps.getProperty("API_KEY") as String
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        val logoAPI: String = localProps.getProperty("API_KEY_LOGO") as String
+        buildConfigField("String", "API_KEY_LOGO", "\"$logoAPI\"")
     }
 
     buildFeatures{

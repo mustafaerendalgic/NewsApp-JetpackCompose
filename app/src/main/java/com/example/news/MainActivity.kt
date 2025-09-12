@@ -68,8 +68,11 @@ import com.example.news.pages.MarkedScreen
 import com.example.news.pages.SearchScreen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.news.pages.DetailScreen
 
 import com.example.news.ui.theme.NewsTheme
+import com.example.news.ui.viewmodels.MainPageViewModel
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -161,6 +164,8 @@ fun BottomNav(){
         }
     ){innerPadding ->
 
+        val viewModel: MainPageViewModel = hiltViewModel()
+
         NavHost(
             navController = navigationCont,
             startDestination = "home",
@@ -168,10 +173,11 @@ fun BottomNav(){
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            composable("home") { MainPage() }
+            composable("home") { MainPage(navigationCont, viewModel) }
             composable("search") { SearchScreen(paddingValues = innerPadding) }
             composable("marks") { MarkedScreen(paddingValues = innerPadding) }
-            composable("account") { AccountScreen(paddingValues = innerPadding) }}
+            composable("account") { AccountScreen(paddingValues = innerPadding) }
+            composable("details") { DetailScreen(viewModel) }}
 
     }
 
