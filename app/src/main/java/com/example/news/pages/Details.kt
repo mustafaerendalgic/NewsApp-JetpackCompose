@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -72,7 +74,10 @@ fun DetailsScreenUI(articles: Articles?){
         val domain = URI(articles.url).host.removePrefix("www.")
         val logoURL = "https://img.logo.dev/$domain?token=$logoToken&retina=true"
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(Color.White)) {
+
             Box(modifier = Modifier.fillMaxWidth().height(400.dp)){
 
                 AsyncImage(model = ImageRequest.Builder(LocalContext.current)
@@ -87,11 +92,22 @@ fun DetailsScreenUI(articles: Articles?){
                     modifier = Modifier.fillMaxSize()
                 )
 
-                Box(modifier = Modifier.fillMaxSize()
-                    .background(Brush.verticalGradient(colors = listOf(Color.Transparent, Color.Black.copy(0.7f)), startY = 100f))){}
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Brush.verticalGradient(colors = listOf(Color.Transparent, Color.Black.copy(0.7f)),
+                        startY = 100f))){}
 
-                Box(modifier = Modifier.fillMaxSize(0.5f)
-                    .background(Brush.verticalGradient(colors = listOf(Color.Black.copy(0.7f), Color.Transparent), startY = 0f))){}
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.4f)
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent),
+                                startY = 0f
+                            )
+                        )
+                )
 
                 Row(modifier = Modifier.align(Alignment.TopStart).fillMaxWidth().padding(end = 16.dp, start = 8.dp, top = 16.dp)) {
                     Icon(Icons.Filled.ArrowBackIosNew, tint = Color.White, contentDescription = "", modifier = Modifier.size(28.dp))
@@ -102,7 +118,8 @@ fun DetailsScreenUI(articles: Articles?){
 
                 Column(modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(16.dp, bottom = 48.dp, end = 16.dp)) {
+                    .padding(16.dp, bottom = 48.dp, end = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
@@ -119,11 +136,11 @@ fun DetailsScreenUI(articles: Articles?){
                             maxLines = 2)
                     }
 
-                    Text(text = articles.title,
-                        fontSize = 32.sp,
+                    Text(text = articles.title.substringBeforeLast("-"),
+                        fontSize = 24.sp,
                         fontFamily = FontFamily(Font(R.font.gabarito)),
                         color = Color.White,
-                        lineHeight = 36.sp
+                        lineHeight = 26.sp
                         //fontWeight = FontWeight.Bold,
                      )
 
@@ -131,7 +148,7 @@ fun DetailsScreenUI(articles: Articles?){
 
 
             }
-            Card(modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            Card(modifier = Modifier.fillMaxSize()
                 .offset(y = (-24).dp),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(Color.White)
@@ -148,7 +165,7 @@ fun DetailsScreenUI(articles: Articles?){
                         AsyncImage(model = logoURL,
                             contentDescription = "",
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(32.dp)
                                 .clip(CircleShape))
 
                         articles.author?.let {
@@ -158,7 +175,8 @@ fun DetailsScreenUI(articles: Articles?){
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.gabarito)),
                                 color = Color.Black,
-                                maxLines = 1
+                                maxLines = 1,
+                                modifier = Modifier.padding(start = 4.dp)
                             )
 
                         }
@@ -184,7 +202,7 @@ fun DetailsScreenUI(articles: Articles?){
 
                     articles.description?.let{
                         Text(text = articles.description,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             //fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily(Font(R.font.gabarito)),)
                     }
