@@ -3,6 +3,7 @@ package com.example.news.pages
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -73,9 +74,10 @@ fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navCon
 
     Column(modifier = Modifier
         .fillMaxSize()
+        .background(color = Color.White)
         .fillMaxHeight(),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
         )
 
         {

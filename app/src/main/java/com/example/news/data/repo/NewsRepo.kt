@@ -8,12 +8,11 @@ import javax.inject.Inject
 import com.example.news.BuildConfig
 
 class NewsRepo(val dao: NewsDAO) {
-    val locale: Locale = Locale.getDefault()
-    val region = locale.country
     val apiKey = BuildConfig.API_KEY
 
     suspend fun fetchTheHeadlines(): APICevap{
-        return dao.fetchTheHeadlines(region, apiKey)
+        Log.d("apicevap", "${dao.fetchTheHeadlines("us", apiKey)}")
+        return dao.fetchTheHeadlines("us", apiKey)
     }
 
     suspend fun fetchByKeyword(keyword: String): APICevap{

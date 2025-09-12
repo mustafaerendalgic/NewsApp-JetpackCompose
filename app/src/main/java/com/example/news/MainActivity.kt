@@ -2,9 +2,11 @@ package com.example.news
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -96,6 +98,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BottomNav(){
 
+    Log.d("API_KEY_CHECK", "API key: ${BuildConfig.API_KEY}")
+
     val items: List<BottomNavigationItem> = listOf(
         BottomNavigationItem(route = "home", selectedIcon = Icons.Filled.Newspaper, unselectedIcon = Icons.Outlined.Newspaper),
         BottomNavigationItem(route = "search", selectedIcon = Icons.Filled.Search, unselectedIcon = Icons.Outlined.Search),
@@ -114,7 +118,6 @@ fun BottomNav(){
     Scaffold(
         topBar = {
             Surface(
-                shadowElevation = 12.dp,
                 color = MaterialTheme.colorScheme.surface
             ) {
                 Column {
@@ -127,10 +130,11 @@ fun BottomNav(){
                             )
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surface
+                            containerColor = Color.White
                         ),
                         modifier = Modifier
-                            .shadow(22.dp),
+                            .shadow(8.dp)
+                            .background(color = Color.White),
                     )
 
                     HorizontalDivider(
@@ -141,7 +145,7 @@ fun BottomNav(){
             }
         },
         bottomBar = {
-            NavigationBar {
+            NavigationBar(containerColor = Color.White) {
                 items.forEach {
                     val selected = it.route == currentRoute
                     NavigationBarItem(selected = selected,
