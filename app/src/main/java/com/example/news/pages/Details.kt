@@ -1,9 +1,11 @@
 package com.example.news.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,10 +25,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Newspaper
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Source
 import androidx.compose.material.icons.rounded.Timelapse
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,10 +49,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,16 +68,16 @@ import com.example.news.util.ParseFunction
 import java.net.URI
 
 @Composable
-fun DetailScreen(viewModel: MainPageViewModel){
+fun DetailScreen(viewModel: MainPageViewModel, paddingValues: PaddingValues, navController: NavController){
 
     val article by viewModel.detailItem.collectAsState(initial = null)
 
-    DetailsScreenUI(article)
+    DetailsScreenUI(article, paddingValues, navController)
 
 }
 
 @Composable
-fun DetailsScreenUI(articles: Articles?){
+fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navController: NavController){
     articles?.let {
 
         val logoToken = BuildConfig.API_KEY_LOGO
@@ -75,8 +85,9 @@ fun DetailsScreenUI(articles: Articles?){
         val logoURL = "https://img.logo.dev/$domain?token=$logoToken&retina=true"
 
         Column(modifier = Modifier.fillMaxSize()
+            .padding(top = paddingValues.calculateTopPadding())
             .verticalScroll(rememberScrollState())
-            .background(Color.White)) {
+            .offset(y = -8.dp)) {
 
             Box(modifier = Modifier.fillMaxWidth().height(400.dp)){
 
@@ -109,13 +120,6 @@ fun DetailsScreenUI(articles: Articles?){
                         )
                 )
 
-                Row(modifier = Modifier.align(Alignment.TopStart).fillMaxWidth().padding(end = 16.dp, start = 8.dp, top = 16.dp)) {
-                    Icon(Icons.Filled.ArrowBackIosNew, tint = Color.White, contentDescription = "", modifier = Modifier.size(28.dp))
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(Icons.Filled.BookmarkBorder, tint = Color.White, contentDescription = "", modifier = Modifier.size(28.dp))
-                }
-
-
                 Column(modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp, bottom = 48.dp, end = 16.dp),
@@ -131,7 +135,6 @@ fun DetailsScreenUI(articles: Articles?){
                         Text(text = articles.source.name,
                             fontSize = 22.sp,
                             fontFamily = FontFamily(Font(R.font.gabarito)),
-                            color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 2)
                     }
@@ -139,19 +142,46 @@ fun DetailsScreenUI(articles: Articles?){
                     Text(text = articles.title.substringBeforeLast("-"),
                         fontSize = 24.sp,
                         fontFamily = FontFamily(Font(R.font.gabarito)),
-                        color = Color.White,
                         lineHeight = 26.sp
                         //fontWeight = FontWeight.Bold,
                      )
 
                 }
 
+                Row(modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .fillMaxWidth()
+                    .padding(end = 16.dp, start = 8.dp, top = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+
+                    Icon(Icons.Filled.ArrowBackIosNew,
+                        tint = Color.White, contentDescription = "",
+                        modifier = Modifier.size(28.dp)
+                            .clickable{
+                                navController.popBackStack()
+                        })
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Icon(Icons.Filled.Share,
+                        tint = Color.White,
+                        contentDescription = "",
+                        modifier = Modifier.size(28.dp))
+
+                    Icon(Icons.Filled.BookmarkBorder,
+                        tint = Color.White,
+                        contentDescription = "",
+                        modifier = Modifier.size(28.dp))
+                }
+
 
             }
             Card(modifier = Modifier.fillMaxSize()
-                .offset(y = (-24).dp),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(Color.White)
+                .offset(y = (-24).dp)
+                .weight(1f),
+                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+
             ){
                 Column(modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -174,7 +204,7 @@ fun DetailsScreenUI(articles: Articles?){
                                 text = articles.source.name,
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.gabarito)),
-                                color = Color.Black,
+
                                 maxLines = 1,
                                 modifier = Modifier.padding(start = 4.dp)
                             )
@@ -194,20 +224,52 @@ fun DetailsScreenUI(articles: Articles?){
                             text = ParseFunction(articles.publishedAt),
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.gabarito)),
-                            color = Color.Black.copy(alpha = 0.7f),
                             lineHeight = 24.sp
                         )
 
                     }
 
-                    articles.description?.let{
-                        Text(text = articles.description,
+
+
+                    articles.content?.let{
+
+                        val text = buildAnnotatedString {
+                            append(articles.content.substringBeforeLast("["))
+
+                            pushStringAnnotation(tag = "READ_MORE", annotation = "read_more")
+                            withStyle(style = SpanStyle(
+                                color = MaterialTheme.colorScheme.primary
+                            )) {
+                                append("Read More")
+                            }
+                            pop()
+                        }
+
+                        Text(text = text,
                             fontSize = 18.sp,
                             //fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily(Font(R.font.gabarito)),)
+                            fontFamily = FontFamily(Font(R.font.gabarito)))
+
+                        articles.author?.let {
+
+                            Row(modifier = Modifier.padding(end = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+
+                                /*Spacer(modifier = Modifier.weight(1f))*/
+
+                                Icon(Icons.Filled.Newspaper,
+                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                    contentDescription = "")
+
+                                Text(text = articles.author,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(Font(R.font.gabarito)))
+                            }
+
+                        }
+
                     }
-
-
                 }
             }
         }
@@ -215,25 +277,5 @@ fun DetailsScreenUI(articles: Articles?){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun preview(){
-    val dummy = Articles(
-        source = Source(
-            id = null,
-            name = "CNBC"
-        ),
-        author = "Brian Evans",
-        title = "Stock futures tick higher to start the week as traders look ahead to key inflation data: Live updates - CNBC",
-        description = "Stock futures ticked higher on Monday as investors gear up for a data-heavy week that includes two closely watched readings on inflation.",
-        url = "https://www.cnbc.com/2025/09/07/stock-market-today-live-updates.html",
-        urlToImage = "https://image.cnbcfm.com/api/v1/image/108154805-1749068892466-NYSE_Traders-OB-20250604-CC-PRESS-10.jpg?v=1749069908&w=1920&h=1080",
-        publishedAt = "2025-09-08T10:08:00Z",
-        content = "Stock futures ticked higher on Monday as investors gear up for a data-heavy week that includes two closely watched readings on inflation."
-    )
-
-    DetailsScreenUI(dummy)
-
-}
 
 

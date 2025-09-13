@@ -51,7 +51,7 @@ import kotlin.math.absoluteValue
 
 
 @Composable
-fun MainPage(navController: NavController, viewModel: MainPageViewModel){
+fun MainPage(navController: NavController, viewModel: MainPageViewModel, paddingValues: PaddingValues){
 
     val articleList by viewModel.listOfHeadlines.collectAsState(initial = emptyList())
 
@@ -59,12 +59,12 @@ fun MainPage(navController: NavController, viewModel: MainPageViewModel){
         viewModel.fetchTheHeadlines()
     }
 
-    MainPageUI(articleList = articleList, viewModel, navController)
+    MainPageUI(articleList = articleList, viewModel, navController, paddingValues)
 
 }
 
 @Composable
-fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navController: NavController){
+fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navController: NavController, padding: PaddingValues){
 
     val listState = rememberLazyListState()
 
@@ -74,8 +74,8 @@ fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navCon
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(color = Color.White)
-        .fillMaxHeight(),
+        .fillMaxHeight()
+        .padding(top = padding.calculateTopPadding()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         )
