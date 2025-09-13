@@ -112,7 +112,6 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                 Text(text = ParseFunction(article.publishedAt),
                     fontSize = 18.sp,
                     fontFamily = FontFamily(Font(R.font.gabarito)),
-                    color = Color.White,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
                 )
@@ -144,7 +143,6 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                     Text(text = article.source.name,
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.gabarito)),
-                        color = Color.White,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2)
                 }
@@ -152,7 +150,6 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                 Text(text = article.title,
                     fontSize = 20.sp,
                     fontFamily = FontFamily(Font(R.font.gabarito)),
-                    color = Color.White,
                     //fontWeight = FontWeight.Bold,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2)

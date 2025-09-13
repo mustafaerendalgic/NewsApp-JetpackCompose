@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
@@ -36,7 +38,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -93,6 +97,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,10 +123,10 @@ fun BottomNav(){
     Scaffold(
         topBar = {
             Surface(
-                color = MaterialTheme.colorScheme.surface
             ) {
                 Column {
                     TopAppBar(
+
                         title = {
                             Text(
                                 text = "news",
@@ -129,26 +134,24 @@ fun BottomNav(){
                                 fontFamily = FontFamily(Font(R.font.playfair))
                             )
                         },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.White
-                        ),
+
                         modifier = Modifier
                             .shadow(8.dp)
                             .background(color = Color.White),
                     )
 
                     HorizontalDivider(
-                        thickness = 1.dp,
-                        color = Color.LightGray
+                        thickness = 1.dp
                     )
                 }
             }
         },
         bottomBar = {
-            NavigationBar(containerColor = Color.White) {
+            NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
                 items.forEach {
                     val selected = it.route == currentRoute
                     NavigationBarItem(selected = selected,
+                        colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent),
                         onClick = {
                             navigationCont.navigate(it.route){
                                 popUpTo(navigationCont.graph.startDestinationId){
@@ -175,13 +178,12 @@ fun BottomNav(){
             startDestination = "home",
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
-            composable("home") { MainPage(navigationCont, viewModel) }
+            composable("home") { MainPage(navigationCont, viewModel, innerPadding) }
             composable("search") { SearchScreen(paddingValues = innerPadding) }
             composable("marks") { MarkedScreen(paddingValues = innerPadding) }
             composable("account") { AccountScreen(paddingValues = innerPadding) }
-            composable("details") { DetailScreen(viewModel) }}
+            composable("details") { DetailScreen(viewModel, innerPadding, navigationCont) }}
 
     }
 
