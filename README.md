@@ -10,7 +10,7 @@ This is an early-stage project, still under development.
 - [Hilt]
 - [MVVM Architecture]
 
-![WhatsApp Image 2025-09-13 at 19 20 23_e0ddee2a](https://github.com/user-attachments/assets/20ac9391-5979-4e77-8016-56082ed22b98)
+<img src="https://github.com/user-attachments/assets/20ac9391-5979-4e77-8016-56082ed22b98" width="300"/>
 
 ## Setup
 1. Get a free API key from [NewsAPI](https://newsapi.org/).  
