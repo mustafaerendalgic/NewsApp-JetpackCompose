@@ -24,6 +24,7 @@ import androidx.compose.material.icons.rounded.Timelapse
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,6 +49,7 @@ import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import androidx.compose.ui.text.font.FontFamily
 import androidx.core.content.ContextCompat
+import coil.request.ImageRequest
 import com.example.news.BuildConfig
 import com.example.news.util.ParseFunction
 import dagger.hilt.android.qualifiers.ActivityContext
@@ -69,7 +71,12 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
             .aspectRatio(4f / 3f)){
 
             AsyncImage(
-                model = article.urlToImage,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(article.urlToImage)
+                    .placeholder(R.drawable.outline_ar_stickers_24)
+                    .error(R.drawable.outline_ar_stickers_24)
+                    .fallback(R.drawable.outline_ar_stickers_24)
+                    .build(),
                 contentDescription = article.title,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -113,7 +120,8 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                     fontSize = 18.sp,
                     fontFamily = FontFamily(Font(R.font.gabarito)),
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
+                    maxLines = 2,
+                    color = Color.White
                 )
 
                 Spacer(Modifier.weight(1f))
@@ -144,13 +152,14 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.gabarito)),
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 2)
+                        maxLines = 2,
+                        color = Color.White)
                 }
 
                 Text(text = article.title,
                     fontSize = 20.sp,
                     fontFamily = FontFamily(Font(R.font.gabarito)),
-                    //fontWeight = FontWeight.Bold,
+                    color = Color.White,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2)
 

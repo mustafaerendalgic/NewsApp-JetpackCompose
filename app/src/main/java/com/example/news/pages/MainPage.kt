@@ -82,7 +82,7 @@ fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navCon
 
         {
 
-        Row(modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 24.dp, end = 16.dp),
+        Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 24.dp, end = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically) {
 
