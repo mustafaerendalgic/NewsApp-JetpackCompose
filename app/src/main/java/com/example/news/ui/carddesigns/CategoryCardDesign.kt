@@ -43,6 +43,7 @@ fun CardDesignForCategories(drawable: Int, title: String, isSelected: Boolean = 
                     { MutableInteractionSource() }){
                     onClick()
                 },
+            elevation = CardDefaults.cardElevation(2.dp),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {

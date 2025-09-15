@@ -19,9 +19,10 @@ interface NewsDAO{
     ): APICevap
 
     @GET("top-headlines/")
-    suspend fun fetchTheSources(
-        @Query("sources") country: String,
+    suspend fun fetchTheHeadlinesByCategory(
+        @Query("category") category: String,
+        @Query("country") country: String,
         @Query("apiKey") apiKey: String
-    )
+    ): APICevap
 
 }
