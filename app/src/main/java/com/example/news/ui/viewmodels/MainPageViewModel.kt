@@ -1,5 +1,10 @@
 package com.example.news.ui.viewmodels
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,8 +19,24 @@ import javax.inject.Inject
 @HiltViewModel
 open class MainPageViewModel@Inject constructor(private val repo: NewsRepo) : ViewModel() {
 
-    private val _listOfArticles = MutableStateFlow<List<Articles>>(emptyList())
-    val listOfArticles: StateFlow<List<Articles>> = _listOfArticles
+
+    private val _selectedCategory = MutableStateFlow("Sports")
+    val selectedCategory: StateFlow<String> = _selectedCategory
+
+    private val _lastSelectedCategory = MutableStateFlow("")
+    val lastSelectedCategory: StateFlow<String> = _lastSelectedCategory
+
+    fun lastCategory(cat: String){
+        _lastSelectedCategory.value = cat
+    }
+
+    fun selectCategory(cat: String){
+        _selectedCategory.value = cat
+        fetchTheHeadlinesByCategory(cat)
+    }
+
+    private val _listOfDetailArticles = MutableStateFlow<List<Articles>>(emptyList())
+    val listOfDetailArticles: StateFlow<List<Articles>> = _listOfDetailArticles
 
     private val _listOfHeadlines = MutableStateFlow<List<Articles>>(emptyList())
     val listOfHeadlines: StateFlow<List<Articles>> = _listOfHeadlines
@@ -23,20 +44,46 @@ open class MainPageViewModel@Inject constructor(private val repo: NewsRepo) : Vi
     private val _detailItem = MutableStateFlow<Articles?>(null)
     val detailItem: StateFlow<Articles?> = _detailItem
 
+    private val _categoryItemList = MutableStateFlow<List<Articles>>(emptyList())
+    val categoryItemList: StateFlow<List<Articles>> = _categoryItemList
+
     fun selectedArticle(articles: Articles){
         _detailItem.value = articles
     }
 
-    fun fetchEverything(keyword: String){
+    fun fetchTheHeadlinesByCategory(category: String){
+        viewModelScope.launch {
+            Log.d("NewsRepo", "${repo.fetchTheHeadlinesByCategory(category).articles}")
+                _categoryItemList.value = repo.fetchTheHeadlinesByCategory(category).articles
+            Log.d("NewsRepo2", "${_categoryItemList}")
+            }
+    }
+
+
+    fun fetchRelatedArticles(keyword: String){
         viewModelScope.launch{
-            _listOfArticles.value = repo.fetchByKeyword(keyword).articles
+            _listOfDetailArticles.value = repo.fetchTheHeadlinesByCategory(keyword).articles
         }
     }
 
     fun fetchTheHeadlines(){
         viewModelScope.launch {
-            _listOfHeadlines.value = repo.fetchTheHeadlines().articles
+            _listOfHeadlines.value = repo.fetchTheHeadlinesByCategory("general").articles
         }
+    }
+
+    fun setLastSelectedCategory(isFromCategory: Boolean){
+
+        if(isFromCategory){
+            _lastSelectedCategory.value = _selectedCategory.value.lowercase()
+        }
+
+        else{
+
+            _lastSelectedCategory.value = "general"
+
+        }
+
     }
 
 }

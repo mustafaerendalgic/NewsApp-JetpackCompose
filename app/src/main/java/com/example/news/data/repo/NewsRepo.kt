@@ -19,4 +19,9 @@ class NewsRepo(val dao: NewsDAO) {
         return dao.fetchEverything(keyword, apiKey)
     }
 
+    suspend fun fetchTheHeadlinesByCategory(category: String): APICevap{
+        Log.d("NewsRepo", "fetchTheHeadlinesByCategory: category=$category")
+        return dao.fetchTheHeadlinesByCategory(category, country = "us", apiKey= apiKey)
+    }
+
 }

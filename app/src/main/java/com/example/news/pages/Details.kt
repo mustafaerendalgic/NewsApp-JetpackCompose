@@ -38,12 +38,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.news.data.entity.Articles
 import com.example.news.ui.viewmodels.MainPageViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +71,7 @@ import com.example.news.BuildConfig
 import com.example.news.R
 import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.DetailHeadlinesDesignUI
+import com.example.news.util.FetchTheLogo
 import com.example.news.util.ParseFunction
 import java.net.URI
 
@@ -85,9 +88,15 @@ fun DetailScreen(viewModel: MainPageViewModel, paddingValues: PaddingValues, nav
 fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navController: NavController, viewModel: MainPageViewModel){
     articles?.let {
 
-        val logoToken = BuildConfig.API_KEY_LOGO
-        val domain = URI(articles.url).host.removePrefix("www.")
-        val logoURL = "https://img.logo.dev/$domain?token=$logoToken&retina=true"
+        val logoURL = FetchTheLogo(articles)
+
+        val relatedKeyword by viewModel.lastSelectedCategory.collectAsState()
+
+        LaunchedEffect(Unit) {
+            viewModel.fetchRelatedArticles(relatedKeyword)
+        }
+
+        val filteredRelationList by viewModel.listOfDetailArticles.collectAsState()
 
         LazyColumn(modifier = Modifier.fillMaxSize()
             .padding(top = paddingValues.calculateTopPadding(), bottom = 96.dp)
@@ -279,16 +288,14 @@ fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navContro
                                 fontFamily = FontFamily(Font(R.font.gabarito)),
                                 modifier = Modifier.padding())
 
-                            val filteredList = remember(articles, viewModel.listOfHeadlines.value){
-                                viewModel.listOfHeadlines.value.filter { it.urlToImage != articles.urlToImage }
-                            }
+                            val filteredList = filteredRelationList
 
                             LazyRow(modifier = Modifier
                                 .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                             ) {
 
-                                itemsIndexed(filteredList) { index, article ->
+                                itemsIndexed(filteredList.filter { it.urlToImage != articles.urlToImage }) { index, article ->
                                     DetailHeadlinesDesignUI(article, navController = navController, viewModel = viewModel)
 
                                 }

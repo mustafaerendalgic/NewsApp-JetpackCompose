@@ -1,5 +1,6 @@
 package com.example.news.pages
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -60,6 +61,7 @@ import com.example.news.R
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.CardDesignForCategories
+import com.example.news.ui.carddesigns.CategoryListCardDesign
 import com.example.news.ui.carddesigns.HeadlinesDesign
 import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.absoluteValue
@@ -73,12 +75,16 @@ fun MainPage(
 ) {
 
     val articleList by viewModel.listOfHeadlines.collectAsState(initial = emptyList())
+    val articleListByCategory by viewModel.categoryItemList.collectAsState(initial = emptyList())
+
+    Log.d("NewsRepo1", "${articleListByCategory}")
 
     LaunchedEffect(Unit) {
         viewModel.fetchTheHeadlines()
+        viewModel.fetchTheHeadlinesByCategory("sports")
     }
 
-    MainPageUI(articleList = articleList, viewModel, navController, paddingValues)
+    MainPageUI(articleList = articleList, viewModel, navController, paddingValues, articleListByCategory)
 
 }
 
@@ -87,31 +93,41 @@ fun MainPageUI(
     articleList: List<Articles>,
     viewModel: MainPageViewModel,
     navController: NavController,
-    padding: PaddingValues
+    padding: PaddingValues,
+    articleListByCategory: List<Articles>
 ) {
 
     val listState = rememberLazyListState()
     val categoryListState = rememberLazyListState()
 
     val conf = LocalConfiguration.current
-    val width = min(conf.screenWidthDp.dp * 0.9f, 400f.dp)
+    val width = min(conf.screenWidthDp.dp * 0.9f, 400.dp)
     val sidePadding = if (width != 400f.dp) ((conf.screenWidthDp.dp - width) / 2) else 16.dp
 
-    val numberOfIconsVisible = conf.screenWidthDp.dp / (6*56).dp
-    val numberOfSpaces = numberOfIconsVisible + 1
-    val paddingForCategories = (conf.screenWidthDp.dp - (6*56).dp) / numberOfSpaces
+    val screenWidth = conf.screenWidthDp
+    val iconWidth = 56
+    var paddingForCategories = 0.dp
+    var numberOfIconsVisible = (screenWidth / (iconWidth))
+
+    paddingForCategories = ((screenWidth - (numberOfIconsVisible * iconWidth)) / (numberOfIconsVisible + 1)).dp
+
+    while(paddingForCategories <= 24.dp){
+        numberOfIconsVisible -= 1
+        paddingForCategories = ((screenWidth - (numberOfIconsVisible * iconWidth)) / (numberOfIconsVisible + 1)).dp
+    }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = padding.calculateTopPadding()),
+            .padding(top = padding.calculateTopPadding(), bottom = 96.dp),
         horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     )
     {
 
         item {
             Row(
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 24.dp, end = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -178,6 +194,7 @@ fun MainPageUI(
                             .clickable {
                                 viewModel.selectedArticle(articleList[index])
                                 navController.navigate("details")
+                                viewModel.setLastSelectedCategory(false)
                             })
                 }
             }
@@ -194,83 +211,39 @@ fun MainPageUI(
                 R.drawable.protection to "Health"
             )
 
-            var onSelected by remember { mutableStateOf<String>("Sports") }
-
-            var isSelected by remember { mutableStateOf(true) }
+            val categ by viewModel.selectedCategory.collectAsState()
 
             LazyRow(
                 modifier = Modifier
-                    .padding(vertical = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(paddingForCategories)    ,
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(paddingForCategories),
+                contentPadding = PaddingValues(horizontal = paddingForCategories),
                 state = categoryListState,
                 flingBehavior = rememberSnapFlingBehavior(categoryListState)
             ) {
+                itemsIndexed(categories) { index, item ->
 
-                item{
-                    Spacer(modifier = Modifier.width(0.dp))
-                }
+                    CardDesignForCategories(item.first, item.second, isSelected = item.second == categ, onClick = {
 
-                items(categories) { (icon, label) ->
-
-                    if(label == onSelected)
-                        isSelected = true
-                    else
-                        isSelected = false
-
-                    CardDesignForCategories(icon, label, isSelected = isSelected, onClick = {
-                       onSelected = label
+                        viewModel.selectCategory(item.second)
 
                     })
-                }
-
-                item{
-                    Spacer(modifier = Modifier.width(0.dp))
                 }
 
             }
 
         }
 
+        itemsIndexed(articleListByCategory) { index, item ->
 
+            CategoryListCardDesign(item, onClick = {
+                viewModel.setLastSelectedCategory(true)
+                viewModel.selectedArticle(item)
+                navController.navigate("details")
+            })
+
+        }
 
     }
 
 }
-
-@Preview(showBackground = true)
-@Composable
-fun mainPreview() {
-
-    val dummyArticles = listOf(
-        Articles(
-            source = Source(
-                id = null,
-                name = "CNBC"
-            ),
-            author = "Brian Evans",
-            title = "Stock futures tick higher to start the week as traders look ahead to key inflation data: Live updates - CNBC",
-            description = "Stock futures ticked higher on Monday as investors gear up for a data-heavy week that includes two closely watched readings on inflation.",
-            url = "https://www.cnbc.com/2025/09/07/stock-market-today-live-updates.html",
-            urlToImage = "https://image.cnbcfm.com/api/v1/image/108154805-1749068892466-NYSE_Traders-OB-20250604-CC-PRESS-10.jpg?v=1749069908&w=1920&h=1080",
-            publishedAt = "2025-09-08T10:08:00Z",
-            content = "Stock futures ticked higher on Monday as investors gear up for a data-heavy week that includes two closely watched readings on inflation."
-        ),
-        Articles(
-            source = Source(
-                id = null,
-                name = "BBC News"
-            ),
-            author = null,
-            title = "Norway's tight vote to decide whether to stick with Labour or turn right - BBC",
-            description = "Norwegians are going to the polls, with domestic issues expected to be at the forefront of voters' minds.",
-            url = "https://www.bbc.com/news/articles/c701382e994o",
-            urlToImage = "https://ichef.bbci.co.uk/news/1024/branded_news/49d2/live/62b61cd0-8c80-11f0-9cf6-cbf3e73ce2b9.jpg",
-            publishedAt = "2025-09-08T06:47:17Z",
-            content = "Norwegians are going to the polls in a tight race…"
-        )
-    )
-
-    //MainPageUI(dummyArticles)
-
-}
-
