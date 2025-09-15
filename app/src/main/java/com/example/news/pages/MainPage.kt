@@ -3,17 +3,21 @@ package com.example.news.pages
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +26,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,10 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.ui.viewmodels.MainPageViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -45,13 +59,18 @@ import androidx.navigation.NavController
 import com.example.news.R
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
+import com.example.news.ui.carddesigns.CardDesignForCategories
 import com.example.news.ui.carddesigns.HeadlinesDesign
 import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.absoluteValue
 
 
 @Composable
-fun MainPage(navController: NavController, viewModel: MainPageViewModel, paddingValues: PaddingValues){
+fun MainPage(
+    navController: NavController,
+    viewModel: MainPageViewModel,
+    paddingValues: PaddingValues
+) {
 
     val articleList by viewModel.listOfHeadlines.collectAsState(initial = emptyList())
 
@@ -64,93 +83,163 @@ fun MainPage(navController: NavController, viewModel: MainPageViewModel, padding
 }
 
 @Composable
-fun MainPageUI(articleList: List<Articles>, viewModel: MainPageViewModel, navController: NavController, padding: PaddingValues){
+fun MainPageUI(
+    articleList: List<Articles>,
+    viewModel: MainPageViewModel,
+    navController: NavController,
+    padding: PaddingValues
+) {
 
     val listState = rememberLazyListState()
+    val categoryListState = rememberLazyListState()
 
     val conf = LocalConfiguration.current
     val width = min(conf.screenWidthDp.dp * 0.9f, 400f.dp)
-    val sidePadding = if(width != 400f.dp )((conf.screenWidthDp.dp - width) / 2) else 16.dp
+    val sidePadding = if (width != 400f.dp) ((conf.screenWidthDp.dp - width) / 2) else 16.dp
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .fillMaxHeight()
-        .padding(top = padding.calculateTopPadding()),
-        verticalArrangement = Arrangement.Top,
+    val numberOfIconsVisible = conf.screenWidthDp.dp / (6*56).dp
+    val numberOfSpaces = numberOfIconsVisible + 1
+    val paddingForCategories = (conf.screenWidthDp.dp - (6*56).dp) / numberOfSpaces
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = padding.calculateTopPadding()),
         horizontalAlignment = Alignment.Start,
-        )
+    )
+    {
 
-        {
+        item {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 24.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-        Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 24.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-
-            Text(text = "Top Headlines",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily(Font(R.font.gabarito)),
-            )
-
-            Spacer(Modifier.weight(1f))
-
-            Text(text = "See All " + "(${articleList.size})",
-                fontSize = 15.sp,
-                fontFamily = FontFamily(Font(R.font.gabarito)),
-                color = Color(0xFF5F8DE3)
-            )
-
-        }
-
-        LazyRow(verticalAlignment = Alignment.Top,
-            state = listState,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = sidePadding)
-        ){
-
-            itemsIndexed(articleList) { index, article ->
-
-                val visibleInfo = listState.layoutInfo.visibleItemsInfo
-                val center = (listState.layoutInfo.viewportStartOffset +
-                        listState.layoutInfo.viewportEndOffset) / 2
-                var scale = 0.92f
-                visibleInfo.find { it.index == index }?.let{iteminfo ->
-
-                    val mostCentered = visibleInfo.minByOrNull {
-                        val itemCenter = it.offset + it.size / 2
-                        (center - itemCenter).absoluteValue
-                    }
-                    scale = if (mostCentered?.index == index) 1f else 0.92f
-
-                }
-
-                val animatedScale by animateFloatAsState(
-                    targetValue = scale,
-                    label = "scaleAnimation",
-                    animationSpec = tween(
-                        durationMillis = 400,
-                        easing = FastOutSlowInEasing
-                    )
+                Text(
+                    text = "Top Headlines",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.gabarito)),
                 )
 
-                HeadlinesDesign(article,
-                    modifier = Modifier
-                        .width(width)
-                        .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale)
-                        .clickable {
-                            viewModel.selectedArticle(articleList[index])
-                            navController.navigate("details")
-                        })
+                Spacer(Modifier.weight(1f))
+
+                Text(
+                    text = "See All " + "(${articleList.size})",
+                    fontSize = 15.sp,
+                    fontFamily = FontFamily(Font(R.font.gabarito)),
+                    color = Color(0xFF5F8DE3)
+                )
+
             }
         }
+
+        item {
+
+            LazyRow(
+                verticalAlignment = Alignment.Top,
+                state = listState,
+                flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = sidePadding)
+            ) {
+
+                itemsIndexed(articleList) { index, article ->
+
+                    val visibleInfo = listState.layoutInfo.visibleItemsInfo
+                    val center = (listState.layoutInfo.viewportStartOffset +
+                            listState.layoutInfo.viewportEndOffset) / 2
+                    var scale = 0.92f
+                    visibleInfo.find { it.index == index }?.let { iteminfo ->
+
+                        val mostCentered = visibleInfo.minByOrNull {
+                            val itemCenter = it.offset + it.size / 2
+                            (center - itemCenter).absoluteValue
+                        }
+                        scale = if (mostCentered?.index == index) 1f else 0.92f
+
+                    }
+
+                    val animatedScale by animateFloatAsState(
+                        targetValue = scale,
+                        label = "scaleAnimation",
+                        animationSpec = tween(
+                            durationMillis = 400,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+
+                    HeadlinesDesign(
+                        article,
+                        modifier = Modifier
+                            .width(width)
+                            .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale)
+                            .clickable {
+                                viewModel.selectedArticle(articleList[index])
+                                navController.navigate("details")
+                            })
+                }
+            }
+        }
+
+        item {
+
+            val categories = listOf(
+                R.drawable.running to "Sports",
+                R.drawable.atom to "Science",
+                R.drawable.briefcase to "Business",
+                R.drawable.court to "Politics",
+                R.drawable.fingerprintscanning to "Crime",
+                R.drawable.protection to "Health"
+            )
+
+            var onSelected by remember { mutableStateOf<String>("Sports") }
+
+            var isSelected by remember { mutableStateOf(true) }
+
+            LazyRow(
+                modifier = Modifier
+                    .padding(vertical = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(paddingForCategories)    ,
+                state = categoryListState,
+                flingBehavior = rememberSnapFlingBehavior(categoryListState)
+            ) {
+
+                item{
+                    Spacer(modifier = Modifier.width(0.dp))
+                }
+
+                items(categories) { (icon, label) ->
+
+                    if(label == onSelected)
+                        isSelected = true
+                    else
+                        isSelected = false
+
+                    CardDesignForCategories(icon, label, isSelected = isSelected, onClick = {
+                       onSelected = label
+
+                    })
+                }
+
+                item{
+                    Spacer(modifier = Modifier.width(0.dp))
+                }
+
+            }
+
+        }
+
+
+
     }
 
 }
 
 @Preview(showBackground = true)
 @Composable
-fun mainPreview(){
+fun mainPreview() {
 
     val dummyArticles = listOf(
         Articles(
