@@ -80,6 +80,7 @@ import com.example.news.pages.MarkedScreen
 import com.example.news.pages.SearchScreen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.pages.DetailScreen
 
@@ -112,9 +113,13 @@ fun BottomNav(){
     Log.d("API_KEY_CHECK", "API key: ${BuildConfig.API_KEY}")
 
     val items: List<BottomNavigationItem> = listOf(
+
         BottomNavigationItem(route = "home", selectedIcon = Icons.Filled.Newspaper, unselectedIcon = Icons.Outlined.Newspaper),
+
         BottomNavigationItem(route = "search", selectedIcon = Icons.Filled.Search, unselectedIcon = Icons.Outlined.Search),
+
         BottomNavigationItem(route = "marks", selectedIcon = Icons.Filled.Bookmark, unselectedIcon = Icons.Outlined.BookmarkBorder),
+
         BottomNavigationItem(route = "account", selectedIcon = Icons.Filled.Person, unselectedIcon = Icons.Outlined.Person)
     )
 
@@ -142,23 +147,23 @@ fun BottomNav(){
 
                     Text(
                         text = "news",
-                        fontSize = 24.sp,
+                        fontSize = 28.sp,
                         fontFamily = FontFamily(Font(R.font.playfair)),
                         modifier = Modifier
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Icon(Icons.Outlined.Search,
+                    Icon(painterResource(R.drawable.magnifyingglass),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(24.dp)
                     )
 
                     Icon(Icons.Outlined.Notifications,
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(26.dp)
                     )
 
                 }
@@ -167,12 +172,17 @@ fun BottomNav(){
         },
         bottomBar = {
             NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
+
                 items.forEach {
+
                     val selected = it.route == currentRoute
+
                     NavigationBarItem(selected = selected,
+
                         colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent,
                             selectedIconColor = MaterialTheme.colorScheme.primary,
                             unselectedIconColor = MaterialTheme.colorScheme.onBackground),
+
                         onClick = {
                             navigationCont.navigate(it.route){
                                 popUpTo(navigationCont.graph.startDestinationId){
@@ -186,9 +196,13 @@ fun BottomNav(){
                                 contentDescription = ""
                             ) else Icon(it.unselectedIcon, contentDescription = "")
                         }
+
                     )
+
                 }
+
             }
+
         }
     ){innerPadding ->
 
