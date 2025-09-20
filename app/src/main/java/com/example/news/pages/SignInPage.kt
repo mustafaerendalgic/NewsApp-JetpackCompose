@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.news.R
 
 @Preview(showBackground = true)
@@ -51,7 +52,8 @@ fun SignInPage(){
             contentScale = ContentScale.Crop)
 
         Column(modifier = Modifier
-            .fillMaxWidth(0.8f)
+            .fillMaxWidth(0.8f),
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
 
             OutlinedTextField(value = "",
@@ -72,7 +74,7 @@ fun SignInPage(){
                     Icon(Icons.Outlined.VpnKey, contentDescription = "")
                 })
 
-            Row {
+            Row(modifier = Modifier.padding(end = 8.dp)) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -86,7 +88,8 @@ fun SignInPage(){
                 ) {
                     Text(
                         text = "Sign In",
-                        fontFamily = FontFamily(Font(R.font.gabarito))
+                        fontFamily = FontFamily(Font(R.font.gabarito)),
+                        fontSize = 16.sp
                     )
                 }
 
