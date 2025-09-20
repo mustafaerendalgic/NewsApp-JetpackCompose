@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -99,9 +100,11 @@ fun CategoryListCardDesign(article: Articles, onClick: () -> Unit){
                             modifier = Modifier.size(20.dp))
 
                         Text(text = ParseFunction(article.publishedAt),
+                            modifier = Modifier.width(64.dp),
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.gabarito)),
                             maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onBackground
 
                         )

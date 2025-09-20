@@ -8,8 +8,11 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
+
     dependencies {
+        classpath("com.google.gms:google-services:4.4.3")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.56")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7")
     }
