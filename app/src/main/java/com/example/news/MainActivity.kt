@@ -1,11 +1,13 @@
 package com.example.news
 
 
+import android.graphics.drawable.PaintDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -21,23 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.CircleNotifications
-import androidx.compose.material.icons.filled.Newspaper
-import androidx.compose.material.icons.filled.NotificationsNone
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Newspaper
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
-
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -79,6 +65,8 @@ import com.example.news.pages.MainPage
 import com.example.news.pages.MarkedScreen
 import com.example.news.pages.SearchScreen
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -86,8 +74,9 @@ import com.example.news.pages.DetailScreen
 
 import com.example.news.ui.theme.NewsTheme
 import com.example.news.ui.viewmodels.MainPageViewModel
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
+
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -97,6 +86,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             NewsTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
+
                     BottomNav()
                 }
             }
@@ -114,13 +104,13 @@ fun BottomNav(){
 
     val items: List<BottomNavigationItem> = listOf(
 
-        BottomNavigationItem(route = "home", selectedIcon = Icons.Filled.Newspaper, unselectedIcon = Icons.Outlined.Newspaper),
+        BottomNavigationItem(route = "home", selectedIcon = painterResource(R.drawable.home)),
 
-        BottomNavigationItem(route = "search", selectedIcon = Icons.Filled.Search, unselectedIcon = Icons.Outlined.Search),
+        BottomNavigationItem(route = "search", selectedIcon = painterResource(R.drawable.magnifyingglass)),
 
-        BottomNavigationItem(route = "marks", selectedIcon = Icons.Filled.Bookmark, unselectedIcon = Icons.Outlined.BookmarkBorder),
+        BottomNavigationItem(route = "marks", selectedIcon = painterResource(R.drawable.bookmark)),
 
-        BottomNavigationItem(route = "account", selectedIcon = Icons.Filled.Person, unselectedIcon = Icons.Outlined.Person)
+        BottomNavigationItem(route = "account", selectedIcon = painterResource(R.drawable.user))
     )
 
     var selectedIndex by remember {
@@ -160,10 +150,10 @@ fun BottomNav(){
                         modifier = Modifier.size(24.dp)
                     )
 
-                    Icon(Icons.Outlined.Notifications,
+                    Icon(painterResource(R.drawable.notification),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "",
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(24.dp)
                     )
 
                 }
@@ -191,10 +181,16 @@ fun BottomNav(){
                             }
                         },
                         icon = {
-                            if (selected) Icon(
+                            if (!selected) Image(
                                 it.selectedIcon,
+                                modifier = Modifier.size(26.dp),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                                 contentDescription = ""
-                            ) else Icon(it.unselectedIcon, contentDescription = "")
+                            ) else Image(
+                                it.selectedIcon,
+                                modifier = Modifier.size(26.dp),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                                contentDescription = "")
                         }
 
                     )

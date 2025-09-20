@@ -64,7 +64,7 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)) {
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
 
         Box(modifier = Modifier
             .fillMaxWidth()

@@ -1,5 +1,6 @@
 package com.example.news.pages
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -28,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +65,11 @@ import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.CardDesignForCategories
 import com.example.news.ui.carddesigns.CategoryListCardDesign
 import com.example.news.ui.carddesigns.HeadlinesDesign
+
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.analytics.logEvent
+
 import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.absoluteValue
 
@@ -76,12 +83,13 @@ fun MainPage(
 
     val articleList by viewModel.listOfHeadlines.collectAsState(initial = emptyList())
     val articleListByCategory by viewModel.categoryItemList.collectAsState(initial = emptyList())
+    val category by viewModel.selectedCategory.collectAsState()
 
     Log.d("NewsRepo1", "${articleListByCategory}")
 
     LaunchedEffect(Unit) {
         viewModel.fetchTheHeadlines()
-        viewModel.fetchTheHeadlinesByCategory("sports")
+        viewModel.fetchTheHeadlinesByCategory(category)
     }
 
     MainPageUI(articleList = articleList, viewModel, navController, paddingValues, articleListByCategory)
@@ -205,9 +213,9 @@ fun MainPageUI(
             val categories = listOf(
                 R.drawable.running to "Sports",
                 R.drawable.atom to "Science",
+                R.drawable.projectmanagement to "Tech",
+                R.drawable.video to "Media",
                 R.drawable.briefcase to "Business",
-                R.drawable.court to "Politics",
-                R.drawable.fingerprintscanning to "Crime",
                 R.drawable.protection to "Health"
             )
 
@@ -215,23 +223,49 @@ fun MainPageUI(
 
             LazyRow(
                 modifier = Modifier
-                    .padding(vertical = 8.dp),
+                    .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(paddingForCategories),
-                contentPadding = PaddingValues(horizontal = paddingForCategories),
                 state = categoryListState,
                 flingBehavior = rememberSnapFlingBehavior(categoryListState)
             ) {
+
+                item {
+                    Spacer(modifier = Modifier.width(0.dp))
+                }
+
                 itemsIndexed(categories) { index, item ->
 
-                    CardDesignForCategories(item.first, item.second, isSelected = item.second == categ, onClick = {
+                    var label = item.second
 
-                        viewModel.selectCategory(item.second)
+                    if(item.second.lowercase() == "media")
+                        label = "Entertainment"
+                    else if(item.second.lowercase() == "tech")
+                        label = "Technology"
+
+                    CardDesignForCategories(item.first, item.second, isSelected = label == categ, onClick = {
+
+                        viewModel.selectCategory(label)
 
                     })
                 }
 
+                item {
+                    Spacer(modifier = Modifier.width(0.dp))
+                }
+
             }
 
+        }
+
+        item{
+            Button(onClick = {
+                Firebase.analytics.logEvent("test_event") {
+                    param("message", "Button clicked!")
+                    param("click_count", 1L)
+                }
+            }) {
+                Text("Log Event")
+            }
         }
 
         itemsIndexed(articleListByCategory) { index, item ->

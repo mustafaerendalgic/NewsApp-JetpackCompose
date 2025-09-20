@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
@@ -54,6 +56,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -87,6 +90,8 @@ fun DetailScreen(viewModel: MainPageViewModel, paddingValues: PaddingValues, nav
 @Composable
 fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navController: NavController, viewModel: MainPageViewModel){
     articles?.let {
+
+        val uriHandler = LocalUriHandler.current
 
         val logoURL = FetchTheLogo(articles)
 
@@ -242,67 +247,76 @@ fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navContro
 
                         }
 
+                        val contentText = if(articles.content == null) articles.title.substringBeforeLast("-") else articles.content.substringBeforeLast("[")
 
-
-                        articles.content?.let{
-
-                            val text = buildAnnotatedString {
-                                append(articles.content.substringBeforeLast("["))
-
-                                pushStringAnnotation(tag = "READ_MORE", annotation = "read_more")
-                                withStyle(style = SpanStyle(
-                                    color = MaterialTheme.colorScheme.primary
-                                )) {
-                                    append("Read More")
-                                }
-                                pop()
+                        val text = buildAnnotatedString {
+                            append(contentText)
+                            pushStringAnnotation(tag = "READ_MORE", annotation = "read_more")
+                            withStyle(style = SpanStyle(
+                                color = MaterialTheme.colorScheme.primary
+                            )) {
+                                append(" Read More")
                             }
 
-                            Text(text = text,
-                                fontSize = 18.sp,
-                                //fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily(Font(R.font.gabarito)))
+                            pop()
+                        }
 
-                            articles.author?.let {
-
-                                Row(modifier = Modifier.padding(end = 16.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-
-                                    /*Spacer(modifier = Modifier.weight(1f))*/
-
-                                    Icon(Icons.Filled.Newspaper,
-                                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                                        contentDescription = "")
-
-                                    Text(text = articles.author,
-                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                                        fontSize = 18.sp,
-                                        fontFamily = FontFamily(Font(R.font.gabarito)))
-                                }
-
-                            }
-
-                            Text(text = "Like This",
-                                color = MaterialTheme.colorScheme.onBackground,
-                                fontSize = 24.sp,
+                        ClickableText(
+                            text = text,
+                            style = MaterialTheme.typography.bodyMedium.copy(
                                 fontFamily = FontFamily(Font(R.font.gabarito)),
-                                modifier = Modifier.padding())
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 18.sp
+                            ),
+                            onClick = { offset ->
+                                text.getStringAnnotations("READ_MORE", offset, offset)
+                                    .firstOrNull()?.let { annotation ->
+                                        uriHandler.openUri(articles.url)
+                                    }
+                            }
+                        )
 
-                            val filteredList = filteredRelationList
+                        articles.author?.let {
 
-                            LazyRow(modifier = Modifier
-                                .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                            ) {
+                            Row(modifier = Modifier.padding(end = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
 
-                                itemsIndexed(filteredList.filter { it.urlToImage != articles.urlToImage }) { index, article ->
-                                    DetailHeadlinesDesignUI(article, navController = navController, viewModel = viewModel)
+                                /*Spacer(modifier = Modifier.weight(1f))*/
 
-                                }
+                                Icon(Icons.Filled.Newspaper,
+                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                    contentDescription = "")
+
+                                Text(text = articles.author,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                    fontSize = 18.sp,
+                                    fontFamily = FontFamily(Font(R.font.gabarito)))
+                            }
+
+                        }
+
+
+
+                        Text(text = "Like This",
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 24.sp,
+                            fontFamily = FontFamily(Font(R.font.gabarito)),
+                            modifier = Modifier.padding())
+
+                        val filteredList = filteredRelationList
+
+                        LazyRow(modifier = Modifier
+                            .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        ) {
+
+                            itemsIndexed(filteredList.filter { it.urlToImage != articles.urlToImage }) { index, article ->
+                                DetailHeadlinesDesignUI(article, navController = navController, viewModel = viewModel)
 
                             }
 
                         }
+
                     }
                 }
             }
