@@ -2,8 +2,6 @@ package com.example.news.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.VpnKey
 import androidx.compose.material3.Button
@@ -27,7 +24,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,22 +34,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.news.R
-import androidx.compose.ui.graphics.ColorFilter
 
-
-
+@Preview(showBackground = true)
 @Composable
-fun SignInPage(navController: NavController){
-
-    SignInPageUI(navController)
-    
-}
-
-@Composable
-fun SignInPageUI(navController: NavController){
+fun SignInPage(){
 
     Column(modifier = Modifier
         .padding(16.dp)
@@ -64,7 +49,6 @@ fun SignInPageUI(navController: NavController){
         Image(painter = painterResource(R.drawable.courier),
             contentDescription = "",
             modifier = Modifier.fillMaxWidth(0.6f).fillMaxHeight(0.1f),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
             contentScale = ContentScale.Crop)
 
         Column(modifier = Modifier
@@ -73,9 +57,8 @@ fun SignInPageUI(navController: NavController){
         ){
 
             OutlinedTextField(value = "",
-
                 onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier,
                 label = {
                     Text(text = "E-mail")},
                 leadingIcon = {
@@ -84,32 +67,20 @@ fun SignInPageUI(navController: NavController){
 
             OutlinedTextField(value = "",
                 onValueChange = {},
-                modifier = Modifier.padding(top = 8.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 8.dp),
                 label = {
-                    Text(text = "Password",
-                        fontSize = 16.sp)},
+                    Text(text = "Password")},
                 leadingIcon = {
                     Icon(Icons.Outlined.VpnKey, contentDescription = "")
                 })
 
-            Row(modifier = Modifier.padding(top = 12.dp),
-                verticalAlignment = Alignment.CenterVertically) {
-
-                Text(text = "Create Account",
-                    modifier = Modifier.clickable(indication = null, interactionSource = remember { MutableInteractionSource() }){
-                        navController.popBackStack()
-                        navController.navigate("signup")
-                    },
-                    fontFamily = FontFamily(Font(R.font.gabarito)),
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary)
+            Row(modifier = Modifier.padding(end = 8.dp)) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
                     onClick = {},
-                    modifier = Modifier,
+                    modifier = Modifier.padding(top = 16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
@@ -127,12 +98,6 @@ fun SignInPageUI(navController: NavController){
 
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun dummyPrev(){
-    val navController = rememberNavController()
-    SignInPageUI(navController)
 }
 

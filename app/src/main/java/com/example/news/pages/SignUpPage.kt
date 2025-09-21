@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.VpnKey
 import androidx.compose.material3.Button
@@ -33,8 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,38 +45,39 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.news.R
 import androidx.compose.ui.graphics.ColorFilter
-
+import androidx.compose.ui.text.TextStyle
 
 
 @Composable
-fun SignInPage(navController: NavController){
+fun SignUpPage(navController: NavController){
 
-    SignInPageUI(navController)
-    
+    SignUpPageUI(navController)
+
 }
 
 @Composable
-fun SignInPageUI(navController: NavController){
+fun SignUpPageUI(navController: NavController){
 
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(painter = painterResource(R.drawable.courier),
-            contentDescription = "",
-            modifier = Modifier.fillMaxWidth(0.6f).fillMaxHeight(0.1f),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-            contentScale = ContentScale.Crop)
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
 
         Column(modifier = Modifier
-            .fillMaxWidth(0.8f),
+            .fillMaxWidth(0.8f)
+            ,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
 
-            OutlinedTextField(value = "",
+            Image(painter = painterResource(R.drawable.courier),
+                contentDescription = "",
+                modifier = Modifier.fillMaxWidth(0.6f).fillMaxHeight(0.1f),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                contentScale = ContentScale.Crop)
 
+            OutlinedTextField(value = "",
                 onValueChange = {},
                 modifier = Modifier.fillMaxWidth(),
                 label = {
@@ -84,8 +88,9 @@ fun SignInPageUI(navController: NavController){
 
             OutlinedTextField(value = "",
                 onValueChange = {},
-                modifier = Modifier.padding(top = 8.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 label = {
                     Text(text = "Password",
                         fontSize = 16.sp)},
@@ -93,30 +98,20 @@ fun SignInPageUI(navController: NavController){
                     Icon(Icons.Outlined.VpnKey, contentDescription = "")
                 })
 
-            Row(modifier = Modifier.padding(top = 12.dp),
-                verticalAlignment = Alignment.CenterVertically) {
-
-                Text(text = "Create Account",
-                    modifier = Modifier.clickable(indication = null, interactionSource = remember { MutableInteractionSource() }){
-                        navController.popBackStack()
-                        navController.navigate("signup")
-                    },
-                    fontFamily = FontFamily(Font(R.font.gabarito)),
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary)
+            Row(modifier = Modifier.padding(end = 8.dp)) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
                     onClick = {},
-                    modifier = Modifier,
+                    modifier = Modifier.padding(top = 12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     )
                 ) {
                     Text(
-                        text = "Sign In",
+                        text = "Sign Up",
                         fontFamily = FontFamily(Font(R.font.gabarito)),
                         fontSize = 16.sp
                     )
@@ -125,14 +120,50 @@ fun SignInPageUI(navController: NavController){
 
             }
 
+            val annotatedString = buildAnnotatedString {
+
+                append("Do you have an account? ")
+
+                pushStringAnnotation(tag = "create_account", annotation = "create_account")
+
+                withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary))  {
+
+                    append("Sign In")
+
+                }
+
+                pop()
+
+            }
+
+            ClickableText(text = annotatedString, modifier = Modifier
+                .padding(top = 48.dp),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.gabarito)),
+                    color = MaterialTheme.colorScheme.onBackground,
+                ),
+                onClick = { offset: Int ->
+
+                    annotatedString.getStringAnnotations(tag = "create_account", start = offset, end = offset).firstOrNull()?.let { annotation ->
+                        navController.popBackStack()
+                        navController.navigate("signin")
+                    }
+
+                }
+
+            )
+
         }
+
     }
+
 }
 
 @Preview(showBackground = true)
 @Composable
-fun dummyPrev(){
+fun dummyPreva(){
     val navController = rememberNavController()
-    SignInPageUI(navController)
+    SignUpPageUI(navController)
 }
 

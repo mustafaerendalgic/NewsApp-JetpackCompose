@@ -71,8 +71,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.pages.DetailScreen
-import com.example.news.pages.SignInPage
-import com.example.news.pages.SignUpPage
 
 import com.example.news.ui.theme.NewsTheme
 import com.example.news.ui.viewmodels.MainPageViewModel
@@ -208,12 +206,10 @@ fun BottomNav(){
 
         NavHost(
             navController = navigationCont,
-            startDestination = "signin",
+            startDestination = "home",
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            composable("signin") { SignInPage(navigationCont) }
-            composable("signup") { SignUpPage(navigationCont) }
             composable("home") { MainPage(navigationCont, viewModel, innerPadding) }
             composable("search") { SearchScreen(paddingValues = innerPadding) }
             composable("marks") { MarkedScreen(paddingValues = innerPadding) }
