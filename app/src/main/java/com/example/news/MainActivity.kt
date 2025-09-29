@@ -123,84 +123,99 @@ fun BottomNav(){
     val backStackEntry by navigationCont.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
+    val notBarsList = listOf("signin", "signup")
+    val showBars = !notBarsList.contains(currentRoute)
+
     Scaffold(
         topBar = {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .background(MaterialTheme.colorScheme.background)
+            if(showBars) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
 
-                Row(modifier = Modifier
-                    .height(64.dp)
-                    .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-
-                    Text(
-                        text = "news",
-                        fontSize = 28.sp,
-                        fontFamily = FontFamily(Font(R.font.playfair)),
+                    Row(
                         modifier = Modifier
-                    )
+                            .height(64.dp)
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
 
-                    Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "courier",
+                            fontSize = 28.sp,
+                            fontFamily = FontFamily(Font(R.font.gabarito)),
+                            modifier = Modifier
+                        )
 
-                    Icon(painterResource(R.drawable.magnifyingglass),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "",
-                        modifier = Modifier.size(24.dp)
-                    )
+                        Spacer(modifier = Modifier.weight(1f))
 
-                    Icon(painterResource(R.drawable.notification),
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "",
-                        modifier = Modifier.size(24.dp)
-                    )
+                        Icon(
+                            painterResource(R.drawable.magnifyingglass),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "",
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Icon(
+                            painterResource(R.drawable.notification),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "",
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                    }
 
                 }
-
             }
         },
         bottomBar = {
-            NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
+            if(showBars) {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.background) {
 
-                items.forEach {
+                    items.forEach {
 
-                    val selected = it.route == currentRoute
+                        val selected = it.route == currentRoute
 
-                    NavigationBarItem(selected = selected,
+                        NavigationBarItem(
+                            selected = selected,
 
-                        colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent,
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onBackground),
+                            colors = NavigationBarItemDefaults.colors(
+                                indicatorColor = Color.Transparent,
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onBackground
+                            ),
 
-                        onClick = {
-                            navigationCont.navigate(it.route){
-                                popUpTo(navigationCont.graph.startDestinationId){
-                                    saveState = true
+                            onClick = {
+                                navigationCont.navigate(it.route) {
+                                    popUpTo(navigationCont.graph.startDestinationId) {
+                                        saveState = true
+                                    }
                                 }
+                            },
+                            icon = {
+                                if (!selected) Image(
+                                    it.selectedIcon,
+                                    modifier = Modifier.size(26.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+                                    contentDescription = ""
+                                ) else Image(
+                                    it.selectedIcon,
+                                    modifier = Modifier.size(26.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                                    contentDescription = ""
+                                )
                             }
-                        },
-                        icon = {
-                            if (!selected) Image(
-                                it.selectedIcon,
-                                modifier = Modifier.size(26.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
-                                contentDescription = ""
-                            ) else Image(
-                                it.selectedIcon,
-                                modifier = Modifier.size(26.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                                contentDescription = "")
-                        }
 
-                    )
+                        )
+
+                    }
 
                 }
-
             }
-
         }
     ){innerPadding ->
 

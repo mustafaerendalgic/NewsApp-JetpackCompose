@@ -257,17 +257,6 @@ fun MainPageUI(
 
         }
 
-        item{
-            Button(onClick = {
-                Firebase.analytics.logEvent("test_event") {
-                    param("message", "Button clicked!")
-                    param("click_count", 1L)
-                }
-            }) {
-                Text("Log Event")
-            }
-        }
-
         itemsIndexed(articleListByCategory) { index, item ->
 
             CategoryListCardDesign(item, onClick = {

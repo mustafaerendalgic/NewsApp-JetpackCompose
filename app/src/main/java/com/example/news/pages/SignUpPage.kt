@@ -1,5 +1,6 @@
 package com.example.news.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +28,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +49,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.news.R
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import com.example.news.data.entity.Articles
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
@@ -77,8 +86,11 @@ fun SignUpPageUI(navController: NavController){
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
                 contentScale = ContentScale.Crop)
 
-            OutlinedTextField(value = "",
-                onValueChange = {},
+            var eMail by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
+
+            OutlinedTextField(value = eMail,
+                onValueChange = {eMail = it},
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "E-mail")},
@@ -86,8 +98,8 @@ fun SignUpPageUI(navController: NavController){
                     Icon(painter = painterResource(R.drawable.user), contentDescription = "")
                 })
 
-            OutlinedTextField(value = "",
-                onValueChange = {},
+            OutlinedTextField(value = password,
+                onValueChange = {password = it},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
@@ -98,12 +110,41 @@ fun SignUpPageUI(navController: NavController){
                     Icon(Icons.Outlined.VpnKey, contentDescription = "")
                 })
 
+            val context = LocalContext.current
+
             Row(modifier = Modifier.padding(end = 8.dp)) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = {},
+                    onClick = {
+
+                        if(eMail.isNotBlank() && password.isNotBlank()){
+
+                            FirebaseAuth.getInstance()
+                                .createUserWithEmailAndPassword(eMail, password).addOnSuccessListener {
+
+                                    Toast.makeText(context, "Başarılı", Toast.LENGTH_SHORT).show()
+
+                                    navController.navigate("signin"){
+
+                                        popUpTo("signup") {inclusive = true}
+
+                                    }
+
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(context, it.message ?: "Başarısız", Toast.LENGTH_SHORT).show()
+                                }
+
+                        }
+                        else{
+
+                            Toast.makeText(context, "Fields can not be empty", Toast.LENGTH_SHORT).show()
+
+                        }
+
+                    },
                     modifier = Modifier.padding(top = 12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
