@@ -109,7 +109,9 @@ fun SignInPageUI(navController: NavController){
 
                 Text(text = "Create Account",
                     modifier = Modifier.clickable(indication = null, interactionSource = remember { MutableInteractionSource() }){
-                        navController.navigate("signup")
+                        navController.navigate("signup"){
+                            popUpTo("signin")
+                        }
                     },
                     fontFamily = FontFamily(Font(R.font.gabarito)),
                     fontSize = 16.sp,
@@ -131,7 +133,7 @@ fun SignInPageUI(navController: NavController){
                                     Toast.makeText(context, "Başarılı", Toast.LENGTH_SHORT).show()
 
                                     navController.navigate("home"){
-                                        popUpTo("signin"){inclusive = true}
+                                        popUpTo(0)
                                     }
 
                                 }

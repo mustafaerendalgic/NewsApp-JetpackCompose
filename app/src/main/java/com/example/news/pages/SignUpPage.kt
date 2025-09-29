@@ -187,8 +187,9 @@ fun SignUpPageUI(navController: NavController){
                 onClick = { offset: Int ->
 
                     annotatedString.getStringAnnotations(tag = "create_account", start = offset, end = offset).firstOrNull()?.let { annotation ->
-                        navController.popBackStack()
-                        navController.navigate("signin")
+                        navController.navigate("signin"){
+                            popUpTo(0){inclusive = true}
+                        }
                     }
 
                 }
