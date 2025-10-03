@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.VpnKey
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -47,6 +49,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.news.R
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -104,23 +109,14 @@ fun SignInPageUI(navController: NavController){
                     Icon(Icons.Outlined.VpnKey, contentDescription = "")
                 })
 
+            val context = LocalContext.current
+
+
             Row(modifier = Modifier.padding(top = 12.dp),
+
                 verticalAlignment = Alignment.CenterVertically) {
 
-                Text(text = "Create Account",
-                    modifier = Modifier.clickable(indication = null, interactionSource = remember { MutableInteractionSource() }){
-                        navController.navigate("signup"){
-                            popUpTo("signin")
-                        }
-                    },
-                    fontFamily = FontFamily(Font(R.font.gabarito)),
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary)
-
                 Spacer(modifier = Modifier.weight(1f))
-
-                val context = LocalContext.current
-
                 Button(
                     onClick = {
 
@@ -158,6 +154,32 @@ fun SignInPageUI(navController: NavController){
 
 
             }
+
+            val annotatedString = buildAnnotatedString {
+
+                append("Not registered yet? ")
+
+                pushStringAnnotation("create_account", "create_account")
+
+                withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+
+                    append("Create an Account")
+
+                }
+
+                pop()
+
+            }
+
+            Text(text = annotatedString,
+                modifier = Modifier.clickable(indication = null, interactionSource = remember { MutableInteractionSource() }){
+                    navController.navigate("signup"){
+                        popUpTo("signin")
+                    }
+                }
+                    .padding(top = 32.dp),
+                fontFamily = FontFamily(Font(R.font.gabarito)),
+                fontSize = 16.sp)
 
         }
     }

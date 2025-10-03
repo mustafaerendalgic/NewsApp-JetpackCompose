@@ -149,13 +149,6 @@ fun MainPageUI(
 
                 Spacer(Modifier.weight(1f))
 
-                Text(
-                    text = "See All " + "(${articleList.size})",
-                    fontSize = 15.sp,
-                    fontFamily = FontFamily(Font(R.font.gabarito)),
-                    color = Color(0xFF5F8DE3)
-                )
-
             }
         }
 
