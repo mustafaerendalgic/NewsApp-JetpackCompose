@@ -10,7 +10,6 @@ This is an early-stage project and it's still under development.
 - [Hilt]
 - [MVVM Architecture]
 - [Firebase]
-![WhatsApp Image 2025-10-04 at 15 44 28_a1a3640e]()
 
 <img src="https://github.com/user-attachments/assets/5ea5b2a1-7246-4d30-ab82-e48d0c0bec70" width="300"/>
 <img src="https://github.com/user-attachments/assets/7b35daef-5316-4e18-8c53-72dd06b27d07" width="300"/>
