@@ -29,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Share
@@ -74,21 +75,32 @@ import com.example.news.BuildConfig
 import com.example.news.R
 import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.DetailHeadlinesDesignUI
+import com.example.news.ui.viewmodels.MarkedViewModel
 import com.example.news.util.FetchTheLogo
 import com.example.news.util.ParseFunction
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.net.URI
 
 @Composable
-fun DetailScreen(viewModel: MainPageViewModel, paddingValues: PaddingValues, navController: NavController){
+fun DetailScreen(viewModel: MainPageViewModel,
+                 paddingValues: PaddingValues,
+                 navController: NavController,
+                 markViewModel: MarkedViewModel){
 
     val article by viewModel.detailItem.collectAsState(initial = null)
 
-    DetailsScreenUI(article, paddingValues, navController, viewModel)
+    DetailsScreenUI(article, paddingValues, navController, viewModel, markViewModel)
 
 }
 
 @Composable
-fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navController: NavController, viewModel: MainPageViewModel){
+fun DetailsScreenUI(articles: Articles?,
+                    paddingValues: PaddingValues,
+                    navController: NavController,
+                    viewModel: MainPageViewModel,
+                    markViewModel: MarkedViewModel){
+
     articles?.let {
 
         val uriHandler = LocalUriHandler.current
@@ -96,6 +108,10 @@ fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navContro
         val logoURL = FetchTheLogo(articles)
 
         val relatedKeyword by viewModel.lastSelectedCategory.collectAsState()
+
+        val markedList by markViewModel.markedList.collectAsState()
+        val isMarked = markedList.any { it.url == articles.url }
+        val userID = FirebaseAuth.getInstance().currentUser?.uid
 
         LaunchedEffect(Unit) {
             viewModel.fetchRelatedArticles(relatedKeyword)
@@ -191,10 +207,16 @@ fun DetailsScreenUI(articles: Articles?, paddingValues: PaddingValues, navContro
                             contentDescription = "",
                             modifier = Modifier.size(28.dp))
 
-                        Icon(Icons.Filled.BookmarkBorder,
+                        Icon(if(!isMarked)Icons.Filled.BookmarkBorder else Icons.Filled.Bookmark,
                             tint = Color.White,
                             contentDescription = "",
-                            modifier = Modifier.size(28.dp))
+                            modifier = Modifier.size(28.dp)
+                                .clickable{
+                                    if(!isMarked)
+                                        markViewModel.saveArticleInFirestore(articles, userID)
+                                    else
+                                        markViewModel.deleteMarkedFromFirebase(userID, articles.url)
+                                })
                     }
                 }
             }

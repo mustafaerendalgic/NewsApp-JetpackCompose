@@ -65,10 +65,13 @@ import com.example.news.data.entity.Source
 import com.example.news.ui.carddesigns.CardDesignForCategories
 import com.example.news.ui.carddesigns.CategoryListCardDesign
 import com.example.news.ui.carddesigns.HeadlinesDesign
+import com.example.news.ui.viewmodels.MarkedViewModel
+import com.example.news.util.hashUrl
 
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.analytics.logEvent
+import com.google.firebase.auth.FirebaseAuth
 
 import org.intellij.lang.annotations.JdkConstants
 import kotlin.math.absoluteValue
@@ -78,7 +81,8 @@ import kotlin.math.absoluteValue
 fun MainPage(
     navController: NavController,
     viewModel: MainPageViewModel,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    markViewModel: MarkedViewModel
 ) {
 
     val articleList by viewModel.listOfHeadlines.collectAsState(initial = emptyList())
@@ -92,7 +96,7 @@ fun MainPage(
         viewModel.fetchTheHeadlinesByCategory(category)
     }
 
-    MainPageUI(articleList = articleList, viewModel, navController, paddingValues, articleListByCategory)
+    MainPageUI(articleList = articleList, viewModel, navController, paddingValues, articleListByCategory, markViewModel)
 
 }
 
@@ -102,8 +106,12 @@ fun MainPageUI(
     viewModel: MainPageViewModel,
     navController: NavController,
     padding: PaddingValues,
-    articleListByCategory: List<Articles>
+    articleListByCategory: List<Articles>,
+    markViewModel: MarkedViewModel
 ) {
+
+    val userID = FirebaseAuth.getInstance().currentUser?.uid
+    markViewModel.fetchFavoritesFromFirestore(userID)
 
     val listState = rememberLazyListState()
     val categoryListState = rememberLazyListState()
@@ -187,6 +195,9 @@ fun MainPageUI(
                         )
                     )
 
+                    val markedList by markViewModel.markedList.collectAsState()
+                    val isMarked = markedList.any{hashUrl(it.url) == hashUrl(article.url)}
+
                     HeadlinesDesign(
                         article,
                         modifier = Modifier
@@ -196,7 +207,16 @@ fun MainPageUI(
                                 viewModel.selectedArticle(articleList[index])
                                 navController.navigate("details")
                                 viewModel.setLastSelectedCategory(false)
-                            })
+                            },
+                        onClick = {
+
+                            if(!isMarked)
+                            markViewModel.saveArticleInFirestore(articleList[index], userID)
+                            else
+                                markViewModel.deleteMarkedFromFirebase(userID, article.url)
+
+                        },
+                        isMarked = isMarked)
                 }
             }
         }

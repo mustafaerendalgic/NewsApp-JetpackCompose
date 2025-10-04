@@ -12,21 +12,4 @@ fun hashUrl(url: String): String {
         .joinToString("") { "%02x".format(it) }
 }
 
-fun saveArticleInFirestore(article: Articles, userID: String){
-
-    val db = FirebaseFirestore.getInstance()
-    val articleID = hashUrl(article.url)
-
-    val articleRef = db.collection("articles").document(articleID)
-
-    articleRef.get().addOnSuccessListener {
-        if(!it.exists()){
-            articleRef.set(article)
-        }
-    }
-
-    val userRef = db.collection("users").document(userID)
-    userRef.update("favorites", FieldValue.arrayUnion(articleID))
-
-}
 

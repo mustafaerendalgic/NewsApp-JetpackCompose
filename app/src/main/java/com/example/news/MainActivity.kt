@@ -76,6 +76,7 @@ import com.example.news.pages.SignUpPage
 
 import com.example.news.ui.theme.NewsTheme
 import com.example.news.ui.viewmodels.MainPageViewModel
+import com.example.news.ui.viewmodels.MarkedViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -224,6 +225,7 @@ fun BottomNav(){
         val currentUser = auth.currentUser
 
         val viewModel: MainPageViewModel = hiltViewModel()
+        val markViewModel: MarkedViewModel = hiltViewModel()
 
         NavHost(
             navController = navigationCont,
@@ -233,11 +235,11 @@ fun BottomNav(){
         ) {
             composable("signin") { SignInPage(navigationCont) }
             composable("signup") { SignUpPage(navigationCont) }
-            composable("home") { MainPage(navigationCont, viewModel, innerPadding) }
+            composable("home") { MainPage(navigationCont, viewModel, innerPadding, markViewModel) }
             composable("search") { SearchScreen(paddingValues = innerPadding) }
-            composable("marks") { MarkedScreen(paddingValues = innerPadding) }
+            composable("marks") { MarkedScreen(paddingValues = innerPadding, markViewModel) }
             composable("account") { AccountScreen(paddingValues = innerPadding, navigationCont) }
-            composable("details") { DetailScreen(viewModel, innerPadding, navigationCont) }}
+            composable("details") { DetailScreen(viewModel, innerPadding, navigationCont, markViewModel) }}
 
     }
 

@@ -1,13 +1,18 @@
 package com.example.news.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.news.data.entity.Articles
 import com.example.news.data.repo.NewsRepo
+import com.example.news.util.hashUrl
 import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,25 +23,32 @@ class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewMode
 
     val db = FirebaseFirestore.getInstance()
 
-    fun fetchFavoritesFromFirestore(userID: String){
 
-        val userRef = db.collection("users").document(userID)
 
-        userRef.get().addOnSuccessListener {
+    fun fetchFavoritesFromFirestore(userID: String?){
 
-            if(it.exists()){
+        userID?.let {
 
-                val favoriteIDs = it.get("favorites") as List<String> ?: emptyList()
+            val userRef = db.collection("users").document(userID)
 
-                if(favoriteIDs.isEmpty()){
-                    _markedList.value = emptyList()
-                }
+            userRef.get().addOnSuccessListener {
 
-                else{
+                if(it.exists()){
 
-                    db.collection("articles").whereIn(FieldPath.documentId(), favoriteIDs).get().addOnSuccessListener {
+                    val favoriteIDs = it.get("favorites") as List<String> ?: emptyList()
 
-                        _markedList.value = it.toObjects(Articles::class.java)
+                    if(favoriteIDs.isEmpty()){
+                        _markedList.value = emptyList()
+                        return@addOnSuccessListener
+                    }
+
+                    else{
+
+                        db.collection("articles").whereIn(FieldPath.documentId(), favoriteIDs).get().addOnSuccessListener {
+
+                            _markedList.value = it.toObjects(Articles::class.java)
+
+                        }
 
                     }
 
@@ -45,6 +57,56 @@ class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewMode
             }
 
         }
+
+    }
+
+
+    fun saveArticleInFirestore(article: Articles, userID: String?){
+
+        userID?.let {
+
+            val db = FirebaseFirestore.getInstance()
+            val articleID = hashUrl(article.url)
+
+            val articleRef = db.collection("articles").document(articleID)
+
+            articleRef.get().addOnSuccessListener {
+                if(!it.exists()){
+                    articleRef.set(article)
+                }
+            }
+
+            val userRef = db.collection("users").document(userID)
+
+            userRef.update("favorites", FieldValue.arrayUnion(articleID)).addOnFailureListener {
+                userRef.set(mapOf("favorites" to listOf<String>()))
+            }
+
+            fetchFavoritesFromFirestore(userID)
+
+        }
+
+    }
+
+    fun deleteMarkedFromFirebase(userID: String?, url: String){
+
+        userID?.let {
+
+            val db = FirebaseFirestore.getInstance()
+
+            val userRef = db.collection("users").document(userID)
+
+            userRef.update("favorites", FieldValue.arrayRemove(hashUrl(url))).addOnSuccessListener {
+                fetchFavoritesFromFirestore(userID)
+            }
+
+        }
+
+    }
+
+    fun checkIfExists(hash: String): Boolean{
+
+        return markedList.value.any { hashUrl(it.url) == hash }
 
     }
 

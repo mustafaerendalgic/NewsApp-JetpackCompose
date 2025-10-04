@@ -2,6 +2,7 @@ package com.example.news.ui.carddesigns
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.rounded.Timelapse
 import androidx.compose.material3.Card
@@ -59,7 +61,7 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
+fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier, onClick: () -> Unit, isMarked: Boolean){
 
     Card(
         modifier = modifier,
@@ -126,9 +128,12 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier){
 
                 Spacer(Modifier.weight(1f))
 
-                Icon(Icons.Outlined.BookmarkBorder, contentDescription = "Mark",
-                    modifier = Modifier,
-                    tint = colorResource(R.color.white),
+                Icon(if(!isMarked)Icons.Outlined.BookmarkBorder else Icons.Filled.Bookmark,
+                    modifier = Modifier.clickable{
+                        onClick()
+                    },
+                    contentDescription = "Mark",
+                    tint = colorResource(R.color.white)
                 )
 
             }
@@ -182,5 +187,5 @@ fun HeadlinesDesignPrev(){
         publishedAt = "2025-09-08",
         content = "Some content..."
     )
-    HeadlinesDesign(dummyArticle)
+    HeadlinesDesign(dummyArticle, onClick = {}, isMarked = false)
 }

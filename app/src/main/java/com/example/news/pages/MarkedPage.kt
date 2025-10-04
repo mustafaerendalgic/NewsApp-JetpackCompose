@@ -11,9 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.news.ui.viewmodels.MainPageViewModel
+import com.example.news.ui.viewmodels.MarkedViewModel
 
 @Composable
-fun MarkedScreen(paddingValues: PaddingValues){
+fun MarkedScreen(paddingValues: PaddingValues,
+                 markViewModel: MarkedViewModel){
     Column(modifier = Modifier.fillMaxSize()
         .padding(paddingValues),
 
