@@ -110,7 +110,7 @@ fun DetailsScreenUI(articles: Articles?,
         val relatedKeyword by viewModel.lastSelectedCategory.collectAsState()
 
         val markedList by markViewModel.markedList.collectAsState()
-        val isMarked = markedList.any { it.url == articles.url }
+        val isMarked = markedList.any { it.articles.url == articles.url }
         val userID = FirebaseAuth.getInstance().currentUser?.uid
 
         LaunchedEffect(Unit) {
@@ -333,7 +333,15 @@ fun DetailsScreenUI(articles: Articles?,
                         ) {
 
                             itemsIndexed(filteredList.filter { it.urlToImage != articles.urlToImage }) { index, article ->
-                                DetailHeadlinesDesignUI(article, navController = navController, viewModel = viewModel)
+                                val likeThisIsMarked = markedList.any { it.articles.url == article.url }
+                                DetailHeadlinesDesignUI(article, navController = navController, viewModel = viewModel, isMarked = likeThisIsMarked, onClick = {
+                                    if(likeThisIsMarked){
+                                        markViewModel.deleteMarkedFromFirebase(userID = userID, article.url)
+                                    }
+                                    else{
+                                        markViewModel.saveArticleInFirestore(article, userID)
+                                    }
+                                })
 
                             }
 

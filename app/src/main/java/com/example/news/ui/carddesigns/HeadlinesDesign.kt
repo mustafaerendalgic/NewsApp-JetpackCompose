@@ -64,13 +64,13 @@ import java.time.format.DateTimeFormatter
 fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier, onClick: () -> Unit, isMarked: Boolean){
 
     Card(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth().padding(8.dp),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
 
         Box(modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(4f / 3f)){
+            .aspectRatio(16f / 9f)){
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)

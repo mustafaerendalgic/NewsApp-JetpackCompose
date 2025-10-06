@@ -32,6 +32,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -182,7 +183,7 @@ fun MainPageUI(
                             val itemCenter = it.offset + it.size / 2
                             (center - itemCenter).absoluteValue
                         }
-                        scale = if (mostCentered?.index == index) 1f else 0.92f
+                        scale = if (mostCentered?.index == index) 1.08f else 1f
 
                     }
 
@@ -196,7 +197,7 @@ fun MainPageUI(
                     )
 
                     val markedList by markViewModel.markedList.collectAsState()
-                    val isMarked = markedList.any{hashUrl(it.url) == hashUrl(article.url)}
+                    val isMarked = markedList.any{hashUrl(it.articles.url) == hashUrl(article.url)}
 
                     HeadlinesDesign(
                         article,
@@ -211,7 +212,7 @@ fun MainPageUI(
                         onClick = {
 
                             if(!isMarked)
-                            markViewModel.saveArticleInFirestore(articleList[index], userID)
+                                markViewModel.saveArticleInFirestore(articleList[index], userID)
                             else
                                 markViewModel.deleteMarkedFromFirebase(userID, article.url)
 
@@ -277,6 +278,10 @@ fun MainPageUI(
                 viewModel.selectedArticle(item)
                 navController.navigate("details")
             })
+
+            Divider(thickness = (0.7).dp,
+                color = Color.LightGray,
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp))
 
         }
 

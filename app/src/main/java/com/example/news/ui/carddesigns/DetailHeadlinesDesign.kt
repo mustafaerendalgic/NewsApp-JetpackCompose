@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.rounded.Timelapse
 import androidx.compose.material3.Card
@@ -45,10 +46,11 @@ import com.example.news.R
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.Source
 import com.example.news.ui.viewmodels.MainPageViewModel
+import com.example.news.ui.viewmodels.MarkedViewModel
 import com.example.news.util.ParseFunction
 
 @Composable
-fun DetailHeadlinesDesignUI(articles: Articles, navController: NavController, viewModel: MainPageViewModel){
+fun DetailHeadlinesDesignUI(articles: Articles, navController: NavController, viewModel: MainPageViewModel, isMarked: Boolean, onClick: () -> Unit){
 
     Card(modifier = Modifier
         .width(300.dp)
@@ -101,8 +103,10 @@ fun DetailHeadlinesDesignUI(articles: Articles, navController: NavController, vi
 
                 Spacer(Modifier.weight(1f))
 
-                Icon(Icons.Outlined.BookmarkBorder, contentDescription = "Mark",
-                    modifier = Modifier,
+                Icon(if(!isMarked)Icons.Outlined.BookmarkBorder else Icons.Filled.Bookmark, contentDescription = "Mark",
+                    modifier = Modifier.clickable{
+                        onClick()
+                    },
                     tint = colorResource(R.color.white),
                 )
 

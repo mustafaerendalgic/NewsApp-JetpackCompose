@@ -3,27 +3,33 @@ package com.example.news.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.news.data.entity.Articles
+import com.example.news.data.entity.ArticlesWithTime
 import com.example.news.data.repo.NewsRepo
 import com.example.news.util.hashUrl
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewModel() {
 
-    private val _markedList = MutableStateFlow<List<Articles>>(emptyList())
-    val markedList: StateFlow<List<Articles>> = _markedList
+    private val _markedList = MutableStateFlow<List<ArticlesWithTime>>(emptyList())
+    val markedList: StateFlow<List<ArticlesWithTime>> = _markedList
 
+    private val _markedListWithTime = MutableStateFlow<List<Date?>>(emptyList())
+    val markedListWithTime: StateFlow<List<Date?>> = _markedListWithTime
     val db = FirebaseFirestore.getInstance()
-
-
 
     fun fetchFavoritesFromFirestore(userID: String?){
 
@@ -31,25 +37,31 @@ class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewMode
 
             val userRef = db.collection("users").document(userID)
 
-            userRef.get().addOnSuccessListener {
+            val favoritesRef = userRef.collection("favorites").orderBy("time", Query.Direction.DESCENDING)
 
-                if(it.exists()){
+            favoritesRef.get().addOnSuccessListener {
 
-                    val favoriteIDs = it.get("favorites") as List<String> ?: emptyList()
+                if(it.isEmpty){
+                    _markedList.value = emptyList()
+                    _markedListWithTime.value = emptyList()
+                    return@addOnSuccessListener
+                }
 
-                    if(favoriteIDs.isEmpty()){
-                        _markedList.value = emptyList()
-                        return@addOnSuccessListener
+                val favoriteIDs = it.documents.map { it.id }
+
+                _markedListWithTime.value = it.documents.map {
+                    it.getTimestamp("time")?.toDate() }
+
+                db.collection("articles").whereIn(FieldPath.documentId(), favoriteIDs).get().addOnSuccessListener {
+
+                    val articles = it.toObjects(Articles::class.java)
+
+                    val ordered = favoriteIDs.map { id ->
+                        articles.find { hashUrl(it.url) == id }
                     }
 
-                    else{
-
-                        db.collection("articles").whereIn(FieldPath.documentId(), favoriteIDs).get().addOnSuccessListener {
-
-                            _markedList.value = it.toObjects(Articles::class.java)
-
-                        }
-
+                    _markedList.value = ordered.mapIndexed { index, item ->
+                        ArticlesWithTime(item!!, _markedListWithTime.value[index])
                     }
 
                 }
@@ -67,6 +79,8 @@ class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewMode
 
             val db = FirebaseFirestore.getInstance()
             val articleID = hashUrl(article.url)
+            val markObject = mapOf("hash" to articleID,
+                "time" to FieldValue.serverTimestamp())
 
             val articleRef = db.collection("articles").document(articleID)
 
@@ -78,11 +92,9 @@ class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewMode
 
             val userRef = db.collection("users").document(userID)
 
-            userRef.update("favorites", FieldValue.arrayUnion(articleID)).addOnFailureListener {
-                userRef.set(mapOf("favorites" to listOf<String>()))
+            userRef.collection("favorites").document(articleID).set(markObject, SetOptions.merge()).addOnSuccessListener {
+                fetchFavoritesFromFirestore(userID)
             }
-
-            fetchFavoritesFromFirestore(userID)
 
         }
 
@@ -96,17 +108,11 @@ class MarkedViewModel @Inject constructor(private val repo: NewsRepo) : ViewMode
 
             val userRef = db.collection("users").document(userID)
 
-            userRef.update("favorites", FieldValue.arrayRemove(hashUrl(url))).addOnSuccessListener {
+            userRef.collection("favorites").document(hashUrl(url)).delete().addOnSuccessListener {
                 fetchFavoritesFromFirestore(userID)
             }
 
         }
-
-    }
-
-    fun checkIfExists(hash: String): Boolean{
-
-        return markedList.value.any { hashUrl(it.url) == hash }
 
     }
 
