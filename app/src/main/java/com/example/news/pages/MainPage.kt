@@ -279,8 +279,8 @@ fun MainPageUI(
                 navController.navigate("details")
             })
 
-            Divider(thickness = (0.7).dp,
-                color = Color.LightGray,
+            Divider(thickness = (0.5).dp,
+                color = Color(0x7d7d7d).copy(alpha = 0.5f),
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp))
 
         }

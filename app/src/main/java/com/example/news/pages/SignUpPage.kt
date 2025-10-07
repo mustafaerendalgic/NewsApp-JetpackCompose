@@ -122,7 +122,7 @@ fun SignUpPageUI(navController: NavController){
                         if(eMail.isNotBlank() && password.isNotBlank()){
 
                             FirebaseAuth.getInstance()
-                                .createUserWithEmailAndPassword(eMail, password).addOnSuccessListener {
+                                .createUserWithEmailAndPassword(eMail.trim(), password).addOnSuccessListener {
 
                                     Toast.makeText(context, "Başarılı", Toast.LENGTH_SHORT).show()
 

@@ -92,7 +92,7 @@ fun MarkedScreen(paddingValues: PaddingValues,
             },
                 FormatTimestamps(date)
             )
-            Divider(color = Color.LightGray, thickness = (0.5).dp, modifier = Modifier.padding(top = 8.dp))
+            Divider(color = Color(0x7d7d7d).copy(alpha = 0.5f), thickness = (0.5).dp, modifier = Modifier.padding(top = 8.dp))
         }
 
     }

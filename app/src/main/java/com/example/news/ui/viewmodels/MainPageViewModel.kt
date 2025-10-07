@@ -26,10 +26,6 @@ open class MainPageViewModel@Inject constructor(private val repo: NewsRepo) : Vi
     private val _lastSelectedCategory = MutableStateFlow("")
     val lastSelectedCategory: StateFlow<String> = _lastSelectedCategory
 
-    fun lastCategory(cat: String){
-        _lastSelectedCategory.value = cat
-    }
-
     fun selectCategory(cat: String){
         _selectedCategory.value = cat
         fetchTheHeadlinesByCategory(cat)

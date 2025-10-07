@@ -123,7 +123,7 @@ fun SignInPageUI(navController: NavController){
                         if(eMail.isNotBlank() && password.isNotBlank()) {
 
                             FirebaseAuth.getInstance()
-                                .signInWithEmailAndPassword(eMail, password)
+                                .signInWithEmailAndPassword(eMail.trim(), password)
                                 .addOnSuccessListener {
 
                                     Toast.makeText(context, "Başarılı", Toast.LENGTH_SHORT).show()
