@@ -12,7 +12,9 @@ This is an early-stage project and it's still under development.
 - [Firebase]
 
 <img src="https://github.com/user-attachments/assets/5ea5b2a1-7246-4d30-ab82-e48d0c0bec70" width="300"/>
+<img src="https://github.com/user-attachments/assets/9b187eac-6b56-4c14-a578-aa30a2282425" width="300"/>
 <img src="https://github.com/user-attachments/assets/7b35daef-5316-4e18-8c53-72dd06b27d07" width="300"/>
+<img src="https://github.com/user-attachments/assets/0be9684b-6606-4aac-b876-310c20fdf35f" width="300"/>
 <img src="https://github.com/user-attachments/assets/877e25f4-bda1-4b4c-9f3d-a4e74e1b0736" width="300"/>
 
 
