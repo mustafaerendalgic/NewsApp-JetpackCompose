@@ -115,11 +115,11 @@ fun HeadlinesDesign(article: Articles, modifier: Modifier = Modifier, onClick: (
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically) {
 
-                Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi), contentDescription = "",
-                    modifier = Modifier.size(20.dp))
+                Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi).copy(alpha = 0.8f), contentDescription = "",
+                    modifier = Modifier.size(16.dp))
 
                 Text(text = ParseFunction(article.publishedAt),
-                    fontSize = 18.sp,
+                    fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.gabarito)),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,

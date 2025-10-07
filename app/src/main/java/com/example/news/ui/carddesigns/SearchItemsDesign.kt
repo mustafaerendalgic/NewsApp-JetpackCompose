@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -59,6 +60,7 @@ fun SearchItemDesign(article: Articles, onClick: () -> Unit){
 
             Text(text = article.title,
                 maxLines = 2,
+                lineHeight = 18.sp,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 16.sp)
@@ -76,6 +78,7 @@ fun SearchItemDesign(article: Articles, onClick: () -> Unit){
 
                 Text(text = article.source.name,
                     maxLines = 1,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp)

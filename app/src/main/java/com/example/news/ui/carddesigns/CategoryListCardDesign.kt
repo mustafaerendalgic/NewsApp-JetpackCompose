@@ -96,7 +96,7 @@ fun CategoryListCardDesign(article: Articles, onClick: () -> Unit){
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                             modifier = Modifier.weight(1f))
 
-                        Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi), contentDescription = "",
+                        Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi).copy(alpha = 0.8f), contentDescription = "",
                             modifier = Modifier.size(20.dp))
 
                         Text(text = ParseFunction(article.publishedAt),
@@ -105,7 +105,7 @@ fun CategoryListCardDesign(article: Articles, onClick: () -> Unit){
                             fontFamily = FontFamily(Font(R.font.gabarito)),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
 
                         )
                     }
@@ -113,6 +113,7 @@ fun CategoryListCardDesign(article: Articles, onClick: () -> Unit){
                     Text(text = article.title.substringBeforeLast("-"),
                         fontSize = 16.sp,
                         maxLines = 5,
+                        lineHeight = 18.sp,
                         overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onBackground)
 
@@ -130,7 +131,7 @@ fun CategoryListCardDesign(article: Articles, onClick: () -> Unit){
                             fontFamily = FontFamily(Font(R.font.gabarito)),
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
 
                         )
                     }

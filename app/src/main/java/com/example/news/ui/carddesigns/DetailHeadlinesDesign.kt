@@ -90,7 +90,7 @@ fun DetailHeadlinesDesignUI(articles: Articles, navController: NavController, vi
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically) {
 
-                Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi), contentDescription = "",
+                Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi).copy(alpha = 0.8f), contentDescription = "",
                     modifier = Modifier.size(20.dp))
 
                 Text(text = ParseFunction(articles.publishedAt),
@@ -98,7 +98,7 @@ fun DetailHeadlinesDesignUI(articles: Articles, navController: NavController, vi
                     fontFamily = FontFamily(Font(R.font.gabarito)),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
-                    color = Color.White
+                    color = Color.White.copy(alpha = 0.8f)
                 )
 
                 Spacer(Modifier.weight(1f))

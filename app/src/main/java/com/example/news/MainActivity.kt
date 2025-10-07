@@ -118,10 +118,6 @@ fun BottomNav(){
         BottomNavigationItem(route = "account", selectedIcon = painterResource(R.drawable.user))
     )
 
-    var selectedIndex by remember {
-        mutableStateOf(0)
-    }
-
     val navigationCont = rememberNavController()
     val backStackEntry by navigationCont.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route

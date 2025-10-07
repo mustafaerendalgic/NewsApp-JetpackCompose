@@ -81,15 +81,15 @@ fun MarkedListCardDesign(article: Articles, onClick: () -> Unit, date: String){
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi), contentDescription = "",
-                modifier = Modifier.size(20.dp))
+            Icon(Icons.Rounded.Timelapse, tint = colorResource(R.color.mavi).copy(alpha = 0.8f), contentDescription = "",
+                modifier = Modifier.size(16.dp))
 
             Text(text = ParseFunction(article.publishedAt),
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.gabarito)),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
             )
 
         }
@@ -97,6 +97,7 @@ fun MarkedListCardDesign(article: Articles, onClick: () -> Unit, date: String){
         Text(text = article.title,
             modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
             fontSize = 16.sp,
+            lineHeight = 18.sp,
             maxLines = 2,
             color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
@@ -116,9 +117,9 @@ fun MarkedListCardDesign(article: Articles, onClick: () -> Unit, date: String){
             horizontalArrangement = Arrangement.spacedBy(16.dp)) {
 
         Text(text = "Marked on: " + date,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.gabarito)),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
             maxLines = 1,
             modifier = Modifier.fillMaxWidth(0.7f),
             overflow = TextOverflow.Ellipsis)

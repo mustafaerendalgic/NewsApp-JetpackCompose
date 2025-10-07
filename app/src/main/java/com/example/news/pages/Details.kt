@@ -162,20 +162,8 @@ fun DetailsScreenUI(articles: Articles?,
                         .padding(16.dp, bottom = 48.dp, end = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                            Icon(Icons.Filled.AllInclusive,
-                                contentDescription = "",
-                                tint = colorResource(R.color.mavi)
-                            )
 
-                            Text(text = articles.source.name,
-                                fontSize = 22.sp,
-                                fontFamily = FontFamily(Font(R.font.gabarito)),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 2,
-                                color = Color.White)
-                        }
 
                         Text(text = articles.title.substringBeforeLast("-"),
                             fontSize = 24.sp,
@@ -248,6 +236,7 @@ fun DetailsScreenUI(articles: Articles?,
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.gabarito)),
                                 maxLines = 1,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.padding(start = 4.dp)
                             )
 
@@ -255,7 +244,7 @@ fun DetailsScreenUI(articles: Articles?,
 
                             Icon(
                                 Icons.Rounded.Timelapse,
-                                tint = colorResource(R.color.mavi),
+                                tint = colorResource(R.color.mavi).copy(alpha = 0.8f),
                                 contentDescription = "",
                                 modifier = Modifier.size(18.dp)
                             )
@@ -263,6 +252,7 @@ fun DetailsScreenUI(articles: Articles?,
                             Text(
                                 text = ParseFunction(articles.publishedAt),
                                 fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                                 fontFamily = FontFamily(Font(R.font.gabarito)),
                                 lineHeight = 24.sp
                             )

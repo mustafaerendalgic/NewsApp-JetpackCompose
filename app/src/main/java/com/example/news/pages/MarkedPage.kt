@@ -55,7 +55,7 @@ fun MarkedScreen(paddingValues: PaddingValues,
     var search by remember { mutableStateOf("") }
 
     LazyColumn(modifier = Modifier.padding(paddingValues),
-        verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
         item {
             Box(modifier = Modifier
