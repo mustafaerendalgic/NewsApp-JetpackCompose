@@ -1,7 +1,5 @@
 package com.example.news.ui.carddesigns
 
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.news.R
 
 @Composable
 fun CardDesignForCategories(drawable: Int, title: String, isSelected: Boolean = false, onClick: () -> Unit){

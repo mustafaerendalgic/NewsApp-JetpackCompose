@@ -1,12 +1,10 @@
 package com.example.news.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.news.data.entity.Articles
 import com.example.news.data.entity.ArticlesWithTime
 import com.example.news.data.repo.NewsRepo
 import com.example.news.util.hashUrl
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,10 +13,7 @@ import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel

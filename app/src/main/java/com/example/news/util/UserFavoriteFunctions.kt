@@ -1,9 +1,5 @@
 package com.example.news.util
 
-import com.example.news.data.entity.Articles
-import com.example.news.ui.viewmodels.MarkedViewModel
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import java.security.MessageDigest
 
 fun hashUrl(url: String): String {

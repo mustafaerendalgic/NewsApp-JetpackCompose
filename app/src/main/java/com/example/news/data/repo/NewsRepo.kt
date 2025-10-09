@@ -1,11 +1,9 @@
 package com.example.news.data.repo
 
 import android.util.Log
+import com.example.news.BuildConfig
 import com.example.news.data.entity.APICevap
 import com.example.news.retrofit.NewsDAO
-import java.util.Locale
-import javax.inject.Inject
-import com.example.news.BuildConfig
 
 class NewsRepo(val dao: NewsDAO) {
     val apiKey = BuildConfig.API_KEY
