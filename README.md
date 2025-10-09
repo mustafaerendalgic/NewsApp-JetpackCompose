@@ -1,6 +1,6 @@
 # NewsApp - Jetpack Compose
 
-A simple news application built with Jetpack Compose which allows authorizing users through Firebase, categorizing headlines, storing the data of articles users marked and also their search history on Firestore. It is supported by a modern UI and Dark Mode options. 
+A News app built with Jetpack Compose which allows user authorization via Firebase, supports categorizing headlines and stores users marked and searched articles on Firestore. The app features a modern UI and a Dark Mode support.
 
 ## Tech's Used
 - [Jetpack Compose]
